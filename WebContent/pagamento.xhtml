@@ -1,0 +1,466 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/template/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<ui:define name="corpo-da-pagina">
+	
+		<h:form id="frm">
+			<p:tabView id="id_my_accor" widgetVar="my_accor" style="font-size:12px">
+
+				<p:tab title="Lista Pagamentos">
+					<p:commandButton value="inserir" action="#{pagamentoMB.inserir}"
+						update=":frm:id_my_accor:tab_dados"
+						onclick="PF('myBlockUI').show()"
+						oncomplete="javascript:my_accor.select(1);PF('myBlockUI').hide();" 
+						disabled="#{!pagamentoMB.isPermitidoAcesso(4,1)}"/>
+					<p:messages id="msgTop" for="msgTop" />
+					<p:growl id="growlTop" sticky="true" for="msgTop"/>
+
+					<p:dataTable id="dt_lista" value="#{pagamentoMB.pagamentosModel}" resizableColumns="true" scrollable="true" scrollWidth="96%" 
+						var="pagamento" border="1" paginator="true" rows="10" lazy="true"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="10,30,50,100,200">
+						<f:facet name="header">Lista de pagamentos</f:facet>
+
+						<p:column style="text-align: center" width="30">
+							<f:facet name="header">Excluir</f:facet>
+							<p:commandButton value=" X "
+								action="#{pagamentoMB.preparaExcluirCancelar(pagamento)}" rendered="#{! pagamentoMB.isRPRegistrado(pagamento)}" oncomplete="myDlgExcluirPagamento.show()" disabled="#{!pagamentoMB.isPermitidoAcesso(4,3)}"/>
+						</p:column>
+						
+						<p:column filterBy="#{pagamento.codigo}" width="80" style="text-align: center" filterStyle="width: 95%">
+								<f:facet name="header">Código BySisco</f:facet>
+							#{pagamento.codigo}
+						</p:column>
+						
+						<p:column filterBy="#{pagamento.nrRP}" style="text-align: center" width="70" filterStyle="width: 95%">
+								<f:facet name="header">Nº RP</f:facet>
+							#{pagamento.nrRP}
+						</p:column>
+
+						<p:column style="text-align: center" width="30">
+							<f:facet name="header">Alterar</f:facet>
+							<p:commandButton value=" A "
+								action="#{pagamentoMB.alterar(pagamento.idPagamento)}"
+								update=":frm:id_my_accor"
+								oncomplete="javascript:my_accor.select(1);" 
+								disabled="#{!pagamentoMB.isPermitidoAcesso(4,2)}"/>
+						</p:column>
+						
+						<p:column style="text-align: center" width="50">
+							<f:facet name="header">Extrato</f:facet>
+							<p:commandButton id="btn_ext" value=" EXT " 
+								oncomplete="dlgIExtrato.show();PF('myBlockUI').hide()" 
+								update=":modalDialogExtrato" 
+								onclick="PF('myBlockUI').show()"
+								action="#{pagamentoMB.emitirExtrato(pagamento.idPagamento)}"/>
+						</p:column>
+						
+						<p:column filterBy="#{pagamento.aquisicao.codigo}" width="90" style="text-align: center" filterStyle="width: 95%">
+								<f:facet name="header">Código Aquisição</f:facet>
+							#{pagamento.aquisicao.codigo}
+						</p:column>
+						
+						<p:column filterBy="#{pagamento.aquisicao.nrRAS}" style="text-align: center" width="70" filterStyle="width: 95%">
+								<f:facet name="header">Nº RAS</f:facet>
+							#{pagamento.aquisicao.nrRAS}
+						</p:column>
+						
+						<p:column filterBy="#{pagamento.nrDocumento}"  width="80" filterStyle="width: 95%">
+								<f:facet name="header">Nº Documento</f:facet>
+							#{pagamento.nrDocumento}
+						</p:column>
+						
+						<p:column filterBy="#{pagamento.nrCambio}"  width="80" filterStyle="width: 95%">
+								<f:facet name="header">Nº Câmbio</f:facet>
+							#{pagamento.nrCambio}
+						</p:column>
+						
+						<p:column width="70">
+								<f:facet name="header">Data</f:facet>
+							#{faturamentoMB.formataData( pagamento.data ) }
+						</p:column>
+						
+						
+						<p:column filterBy="#{pagamento.aquisicao.pessoaAdquirente.nome}" width="230" filterStyle="width: 95%">
+								<f:facet name="header">Adquirente</f:facet>
+							#{pagamento.aquisicao.pessoaAdquirente.nome}
+						</p:column>
+						
+						<p:column filterBy="#{pagamento.aquisicao.pessoaVenda.nome}" width="230" filterStyle="width: 95%">
+								<f:facet name="header">Vendedor</f:facet>
+							#{pagamento.aquisicao.pessoaVenda.nome}
+						</p:column>
+						
+						<p:column filterBy="#{pagamento.protocoloLoteXML}" width="70" filterStyle="width: 95%">
+								<f:facet name="header">Nº Protocolo</f:facet>
+							#{pagamento.protocoloLoteXML}
+						</p:column>
+						
+						<p:column filterBy="#{pagamento.statusLoteXML}" width="90" filterStyle="width: 95%">
+								<f:facet name="header">Status Lote XML</f:facet>
+							#{pagamento.statusLoteXML}
+						</p:column>
+						
+						<p:column width="70" >
+								<f:facet name="header">Transm. XML</f:facet>
+							#{pagamento.dataTransmissaoLoteXML}
+						</p:column>
+						
+						<p:column style="text-align: center"  width="50">
+							<f:facet name="header">Cancelar</f:facet>
+							<p:commandButton value=" C " rendered="#{pagamentoMB.isPossivelCancelar(pagamento)}"
+								action="#{pagamentoMB.preparaExcluirCancelar(pagamento)}"
+								oncomplete="myDlgCancelarPagamento.show()" />
+							<h:outputText value="cancelado" rendered="#{pagamentoMB.isCancelado(pagamento)}" />
+						</p:column>
+						<p:column style="text-align: center" width="400" >
+						</p:column>
+
+					</p:dataTable>
+				</p:tab>
+				<p:tab title="Dados Pagamento" id="tab_dados">
+					<h:inputHidden value="#{pagamentoMB.idPagamento}" />
+					<p:panelGrid style="width: 800px">
+						<p:row>
+							<p:column>
+								<p:outputLabel value="Código: " for="txtCodigo" />
+							</p:column>
+							<p:column>
+								<p:inputText id="txtCodigo" value="#{pagamentoMB.codigo}" style="width: 180px; background-color: #C0C0C0" readonly="true"/>
+							</p:column>
+							<p:column>
+								<p:outputLabel value="Data Cadastro: " for="txtDtCadastro" />
+							</p:column>
+							<p:column>
+								<p:inputText id="txtDtCadastro" value="#{pagamentoMB.dataCadastro}" style="background-color: #C0C0C0" readonly="true"/>
+							</p:column>
+							<p:column>
+								<p:outputLabel value="Nº RP: " for="txtRP" />
+							</p:column>
+							<p:column>
+								<p:inputText id="txtRP" value="#{pagamentoMB.nrRP}" readonly="#{pagamentoMB.isRPRegistradoOuCancelado()}" maxlength="13"/>
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<p:outputLabel value="Nº Documento: " for="txtNrDocumento" />
+							</p:column>
+							<p:column>
+								<p:inputText id="txtNrDocumento" value="#{pagamentoMB.nrDocumento}" maxlength="60"/>
+							</p:column>
+							<p:column>
+								<p:outputLabel value="Data: " for="txtData" />
+							</p:column>
+							<p:column>
+								<p:calendar id="txtData" value="#{pagamentoMB.data}" pattern="dd/MM/yy"/>
+							</p:column>
+							<p:column>
+								<p:outputLabel value="Nº Câmbio: " for="txtNrCambio" />
+							</p:column>
+							<p:column>
+								<p:inputText id="txtNrCambio" value="#{pagamentoMB.nrCambio}" maxlength="60"/>
+							</p:column>
+							
+						</p:row>
+						<p:row>
+							<p:column>
+								<p:outputLabel value="Aquisição: " for="txtAquisição" />
+							</p:column>
+							<p:column colspan="5">
+								<p:autoComplete id="txtAquisição" value="#{pagamentoMB.aquisicao}" maxResults="10" var="aquisicao" completeMethod="#{pagamentoMB.completeAquisicao}" forceSelection="true" size="83" itemLabel="#{aquisicao.formatado}" itemValue="#{aquisicao}" converter="aquisicaoConverter">
+									<p:ajax event="itemSelect" update=":frm:id_my_accor:dt_listaOperacoes" />
+								</p:autoComplete>
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column colspan="6">
+								<p:fieldset id="fs_observacoes" legend="Observações" toggleable="true" collapsed="false" toggleSpeed="500" style="width: 95%">
+									<p:inputTextarea id="txtObs" value="#{pagamentoMB.observacoes}" maxlength="5000" style="width: 95%" rows="7" autoResize="false"/>
+								</p:fieldset>
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column colspan="6">
+								<p:dataTable id="dt_listaOperacoes" value="#{pagamentoMB.aquisicaosOperacao}" var="aquisicaoOperacao" border="1" resizableColumns="true" >
+									<f:facet name="header">
+										Lista de Operações da Aquisição
+									</f:facet>
+			
+									<p:column>
+										<f:facet name="header">Id</f:facet>
+									#{aquisicaoOperacao.aquisicaoOperacaoPK.idAquisicaoOperacao}
+									</p:column>
+									
+									<p:column>
+										<f:facet name="header">Moeda</f:facet>
+									#{aquisicaoOperacao.aquisicaoOperacaoPK.aquisicao.moeda.codigo} - #{aquisicaoOperacao.aquisicaoOperacaoPK.aquisicao.moeda.nome} 
+									</p:column>
+				
+									<p:column>
+										<f:facet name="header">NBS</f:facet>
+									#{aquisicaoOperacao.nbs.codigo} - #{aquisicaoOperacao.nbs.nome}
+									</p:column>
+									
+									<p:column>
+										<f:facet name="header">País Destino</f:facet>
+									#{aquisicaoOperacao.paisDestino.codigo} - #{aquisicaoOperacao.paisDestino.nome}
+									</p:column>
+									
+									<p:column>
+										<f:facet name="header">Modo</f:facet>
+									#{aquisicaoOperacao.modoPrestacao}
+									</p:column>
+	
+									<p:column style="text-align: right">
+										<f:facet name="header">Valor</f:facet>
+										<h:outputText value="#{aquisicaoOperacao.valor}">
+											<f:convertNumber type="currency"  currencySymbol=""/>
+										</h:outputText>
+									</p:column>
+																	
+									<p:column style="text-align: right">
+										<f:facet name="header">Saldo</f:facet>
+										<h:outputText value="#{aquisicaoOperacao.valor - aquisicaoOperacao.valorPago}">
+											<f:convertNumber type="currency"  currencySymbol=""/>
+										</h:outputText>
+									</p:column>
+																			
+									<p:column>
+										<f:facet name="header">Início</f:facet>
+									#{pagamentoMB.formataData(aquisicaoOperacao.dataInicio)}
+									</p:column>
+									
+									<p:column>
+										<f:facet name="header">Conclusão</f:facet>
+									#{pagamentoMB.formataData(aquisicaoOperacao.dataConclusao)}
+									</p:column>
+									
+									<p:column style="text-align: center" rendered="#{! pagamentoMB.isRPRegistrado(null)}">
+										<f:facet name="header">Selecionar</f:facet>
+										<p:commandButton value=" >> "
+											action="#{pagamentoMB.selecionarOperacao(aquisicaoOperacao)}"
+											update=":frm:id_my_accor:fs_operacoes"
+											rendered="#{aquisicaoOperacao.valor - aquisicaoOperacao.valorPago > 0}" />
+									</p:column>
+									
+								</p:dataTable>
+								
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column colspan="6">
+							
+
+								<p:fieldset id="fs_operacoes" legend="Pagamentos" toggleable="true" toggleSpeed="500" style="width: 800px">
+								
+									<p:panelGrid style="width: 800px">
+										<p:row>
+											<p:column colspan="2" style="background-color: #1E90FF; text-align: center" >
+												<b>Operação Selecionada ID: #{pagamentoMB.idAquisicaoOperacao}</b>
+											</p:column>
+										</p:row>
+										
+										<p:row>
+											<p:column>
+												<p:outputLabel value="Valor Pago: " for="txtValorPago" />
+											</p:column>
+											<p:column>
+												<pe:inputNumber id="txtValorPago" value="#{pagamentoMB.pagamentoOperacao.valorPago}" decimalSeparator="," thousandSeparator="."/>
+											</p:column>
+										</p:row>
+										<p:row>
+											<p:column>
+												<p:outputLabel value="Valor Pago com Recursos Mant. Ext.: " for="txtValorPagoRecursoMantidoExterior" />
+											</p:column>
+											<p:column>
+												<pe:inputNumber id="txtValorPagoRecursoMantidoExterior" value="#{pagamentoMB.pagamentoOperacao.valorPagoRecursoMantExterior}" decimalSeparator="," thousandSeparator="."/>
+											</p:column>
+										</p:row>
+										
+										<p:row>
+											<p:column colspan="2" style="background-color: #1E90FF">
+												<p:commandButton value=" novo pagamento " action="#{pagamentoMB.novoPagamento}" 
+													update=":frm:id_my_accor:fs_operacoes" rendered="#{! pagamentoMB.isRPRegistrado(null)}"/>
+												<p:commandButton value=" confirmar pagamento " action="#{pagamentoMB.gravarPagamento}" 
+													update=":frm:id_my_accor:fs_operacoes :frm:id_my_accor:dt_listaOperacoes" rendered="#{! pagamentoMB.isRPRegistrado(null)}"/>
+												<p:messages id="msgPagamento" for="msgPagamento"/>
+											</p:column>
+										</p:row>
+										
+									</p:panelGrid>
+									<p:dataTable id="dt_listaPagamentos" value="#{pagamentoMB.pagamentosOperacao}" var="pagamentoOperacao" border="1" resizableColumns="true" >
+										<f:facet name="header">
+											Lista de Pagamentos
+										</f:facet>
+										<p:column style="text-align: center" rendered="#{! pagamentoMB.isRPRegistrado(null)}">
+											<f:facet name="header">Excluir</f:facet>
+											<p:commandButton value=" X "
+												action="#{pagamentoMB.excluirPagamento(pagamentoOperacao)}" update=":frm:id_my_accor:fs_operacoes  :frm:id_my_accor:dt_listaOperacoes" />
+										</p:column>
+				
+										<p:column>
+											<f:facet name="header">Pag. Nº</f:facet>
+										#{pagamentoOperacao.pagamentoOperacaoPK.idPagamentoOperacao}
+										</p:column>
+										
+										<p:column style="text-align: center">
+											<f:facet name="header">Alterar</f:facet>
+											<p:commandButton value=" A "
+												action="#{pagamentoMB.alterarPagamento(pagamentoOperacao)}"
+												update=":frm:id_my_accor:fs_operacoes" />
+										</p:column>
+										
+										<p:column>
+											<f:facet name="header">Op. Nº</f:facet>
+										#{pagamentoOperacao.aquisicaoOperacao.aquisicaoOperacaoPK.idAquisicaoOperacao}
+										</p:column>
+										
+										<p:column>
+											<f:facet name="header">NBS</f:facet>
+										#{pagamentoOperacao.aquisicaoOperacao.nbs.codigo}
+										</p:column>
+					
+										<p:column style="text-align: right">
+											<f:facet name="header">Valor Pago</f:facet>
+											<h:outputText value="#{pagamentoOperacao.valorPago}">
+												<f:convertNumber type="currency"  currencySymbol=""/>
+											</h:outputText>
+										</p:column>
+										
+										<p:column style="text-align: right">
+											<f:facet name="header">Valor Pago Rec. Ext.</f:facet>
+											<h:outputText value="#{pagamentoOperacao.valorPagoRecursoMantExterior}">
+												<f:convertNumber type="currency"  currencySymbol=""/>
+											</h:outputText>
+										</p:column>
+
+									</p:dataTable>
+								
+								</p:fieldset>
+							
+							
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column width="800" colspan="6">								
+								<p:fieldset id="fs_re" legend="Registros de Exportação Averbados (RE)" toggleable="true" collapsed="true" toggleSpeed="500" style="width: 700px">
+								
+								
+									<p:panelGrid columns="3" style="width: 600px" rendered="#{! pagamentoMB.isRPRegistrado(null)}">
+										<p:outputLabel value="Nº RE: " for="txtRE" title="Número do Registro de Exportação"/>
+										<p:inputMask id="txtRE" value="#{pagamentoMB.nrRE}" mask="99/9999999999"/>
+										<p:commandButton value=" + " action="#{pagamentoMB.inserirRE}" 
+												update=":frm:id_my_accor:fs_re"/>
+									</p:panelGrid>
+									
+									<p:dataTable id="dt_listaRE" value="#{pagamentoMB.pagamentosRE}" var="pagamentoRE" border="1" >
+				
+										<p:column style="text-align: center" rendered="#{! pagamentoMB.isRPRegistrado(null)}">
+											<f:facet name="header">Excluir</f:facet>
+											<p:commandButton value=" X "
+												action="#{pagamentoMB.excluirRE(pagamentoRE)}" update=":frm:id_my_accor:fs_re" />
+										</p:column>
+				
+										<p:column>
+											<f:facet name="header">Id</f:facet>
+										#{pagamentoRE.pagamentoREPK.idPagamentoRE}
+										</p:column>
+					
+										<p:column>
+											<f:facet name="header">Nº RE</f:facet>
+										#{pagamentoRE.nrRE}
+										</p:column>
+									</p:dataTable>
+								
+								</p:fieldset>
+							</p:column>
+						</p:row>
+						
+						<p:row>
+							<p:column width="800" colspan="6">								
+								<p:fieldset id="fs_di" legend="Declarações de Importação (DI)" toggleable="true" collapsed="true" toggleSpeed="500" style="width: 700px">
+								
+								
+									<p:panelGrid columns="3" style="width: 600px" rendered="#{! pagamentoMB.isRPRegistrado(null)}">
+										<p:outputLabel value="Nº DI: " for="txtDI" title="Número da Declaração de Importação"/>
+										<p:inputMask id="txtDI" value="#{pagamentoMB.nrDI}" mask="99/9999999-9"/>
+										<p:commandButton value=" + " action="#{pagamentoMB.inserirDI}" 
+												update=":frm:id_my_accor:fs_di"/>
+									</p:panelGrid>
+									
+									<p:dataTable id="dt_listaDI" value="#{pagamentoMB.pagamentosDI}" var="pagamentoDI" border="1" >
+				
+										<p:column style="text-align: center" rendered="#{! pagamentoMB.isRPRegistrado(null)}">
+											<f:facet name="header">Excluir</f:facet>
+											<p:commandButton value=" X "
+												action="#{pagamentoMB.excluirDI(pagamentoDI)}" update=":frm:id_my_accor:fs_di" />
+										</p:column>
+				
+										<p:column>
+											<f:facet name="header">Id</f:facet>
+										#{pagamentoDI.pagamentoDIPK.idPagamentoDI}
+										</p:column>
+					
+										<p:column>
+											<f:facet name="header">Nº DI</f:facet>
+										#{pagamentoDI.nrDI}
+										</p:column>
+									</p:dataTable>
+								
+								</p:fieldset>
+							</p:column>
+						</p:row>
+						<f:facet name="footer">
+							<p:row>
+								<p:column rendered="#{! pagamentoMB.isRPRegistradoOuCancelado()}"> 
+									<p:commandButton value="Gravar Pagamento" action="#{pagamentoMB.gravar}" 
+										update=":frm:id_my_accor" ajax="false" onclick="PF('myBlockUI').show()"/>
+								</p:column>
+								<p:column colspan="5">
+									<p:messages id="msg" for="msg"/>
+									<p:growl id="growl" sticky="true" for="msg"/>
+								</p:column>
+							</p:row>
+						</f:facet>
+						
+					</p:panelGrid>
+				</p:tab>
+			</p:tabView>
+		</h:form>
+		
+		<p:blockUI widgetVar="myBlockUI" block=":frm:id_my_accor" trigger=":frm:id_my_accor:dt_lista :confirmYes :confirmYesCanc">  
+	        Por favor, aguarde...<br />  
+	        <h:graphicImage library="images" name="ajaxloader.gif" /> 
+	    </p:blockUI>
+	    
+	    <p:dialog id="modalDialogExtrato" header="Extrato" widgetVar="dlgIExtrato" modal="true" height="150" width="300" resizable="false">
+			<div align="center">  
+				<p>
+					<br></br>
+					<h:outputLink value="#{pagamentoMB.linkExtrato}" target="_blank" >
+						<p:graphicImage library="images" name="confirmar.png" width="100" height="60" title="CONFIRMAR"/>
+					</h:outputLink>
+				</p>
+			</div>
+		</p:dialog>
+	    
+		<p:confirmDialog id="dlgExcluirPagamento" message="Deseja realmente excluir este registro?"  
+	          			header="Confirmação" severity="alert" widgetVar="myDlgExcluirPagamento">  
+	       <p:commandButton id="confirmYes" value="Sim" update=":frm:id_my_accor" oncomplete="myDlgExcluirPagamento.hide()"  
+	                   actionListener="#{pagamentoMB.excluir()}" />  
+	       <p:commandButton id="confirmNo" value="Não" onclick="myDlgExcluirPagamento.hide()" type="button" />   
+		</p:confirmDialog>
+		<p:confirmDialog id="dlgCancelarPagamento" message="Deseja realmente cancelar este pagamento?"  
+	          			header="Confirmação" severity="alert" widgetVar="myDlgCancelarPagamento">  
+	       <p:commandButton id="confirmYesCanc" value="Sim" update=":frm:id_my_accor" oncomplete="myDlgCancelarPagamento.hide()"  
+	                   actionListener="#{pagamentoMB.cancelar()}" />  
+	       <p:commandButton value="Não" onclick="myDlgCancelarPagamento.hide()" type="button" />   
+		</p:confirmDialog>
+	</ui:define>
+</ui:composition>

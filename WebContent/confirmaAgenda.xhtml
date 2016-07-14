@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+     
+    <h:head>
+        <title>Marcação</title>
+        <style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+        </style>
+    </h:head>
+     
+    <h:body>
+    <h:form id="form" enctype="multipart/form-data">
+		<p:panel>    
+			<p:dataTable id="dtProfissionais" value="#{mbAtendente.lstAtendentes}" var="ate"
+				style="text-align: center;" emptyMessage="Nenhum Atendente Encontrado.">
+							
+				<p:column headerText="Titulo" style="width:10%">
+					<h:outputText value="#{ate.ate_titulo}" />
+				</p:column>
+				<p:column headerText="Nome" style="width:30%">
+					<h:outputText value="#{ate.ate_nome}" />
+				</p:column>
+			</p:dataTable> 	        
+		</p:panel>
+	    <p:panel >
+			<p:dataTable id="dtDatas" var="age" value="#{mbAgenda.lstAgenda}" selectionMode="single" selection="#{mbAgenda.agendaDataselecionada}" rowKey="#{age.age_data}">
+				<f:facet name="header">
+			    	Selecione a melhor data!
+			    </f:facet>
+			    <p:ajax event="rowSelect" listener="#{mbAgenda.onRowSelect}" update=":form:dtHorarios"  />
+			        
+			    <p:column headerText="Data">
+			    	<h:outputText value="#{age.age_data}">
+			        	<f:convertDateTime pattern="dd/MM/yyyy"/>  
+			        </h:outputText>  
+			    </p:column>
+			    <p:column headerText="Dia">
+			    	<h:outputText value="#{age.age_data}">
+			        	<f:convertDateTime pattern="EEEE"/>  
+			        </h:outputText>  
+			    </p:column>			           
+			</p:dataTable>
+		</p:panel>   
+
+		<p:panel>
+			<p:dataTable id="dtHorarios" var="ageH" value="#{mbAgenda.lstAgendadodia}" selectionMode="single" 
+			selection="#{mbAgenda.agendaDatahoraselecionada}" rowKey="#{ageH.age_codigo}" emptyMessage="Selecione a Melhor Data">
+				<f:facet name="header">
+			    	Selecione o melhor horário!
+			    </f:facet>
+				<p:column headerText="Hora">
+			    	<h:outputText value="#{ageH.age_datahora}">
+			        	<f:convertDateTime pattern="HH:mm" type="time" dateStyle="short" timeZone="GMT-3" />
+			        </h:outputText>  
+			    </p:column>
+			    <p:column headerText="Agendar">
+			            <p:commandButton value="Agendar" icon="ui-icon-extlink"/>
+			    </p:column>        
+			</p:dataTable>
+		</p:panel>		
+    </h:form>
+    </h:body>
+     
+</html>

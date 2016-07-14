@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+     
+    <h:head>
+        <title>Cadastre seu Consultório</title>
+        <style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+            .FontLabel {
+				font-size: 12px !important;
+				font-family: Verdana, Arial, Tahoma;
+				font-weight: bold;
+			}
+			.FontLabelAzul {
+				font-size: 12px !important;
+				font-family: Verdana, Arial, Tahoma;
+				font-weight: bold;
+				color: blue;
+			}
+			.customTxtWidth150px .ui-inputfield .ui-inputtext .ui-widget{
+		    	width:150px !important;
+			}
+			.panelNoBorder, .panelNoBorder tr, .panelNoBorder td{
+				border: hidden;
+				border-color: white;
+			}
+        </style>
+    </h:head>
+     
+    <h:body>
+    <h:form id="form" enctype="multipart/form-data">
+    	<p:growl id="msgs" showDetail="false" showSummary="true" />
+    	
+		<p:panel rendered="#{mbConsultorio.strPassoTela == '1'}">
+			<f:facet name="header">
+				Cadastrar novo Consultório
+			</f:facet>	
+			<p:selectOneButton value="#{mbConsultorio.strMaskcnpjcpf}">
+	            <f:selectItem itemLabel="CNPJ" itemValue="99.999.999\\9999-99" default="true" />
+	            <f:selectItem itemLabel="CPF" itemValue="999.999.999-99" />
+	            <p:ajax update="form"/>	
+	        </p:selectOneButton>
+     
+			<p:outputLabel for="txtCnpjcpf" value="CNPJ:" />
+        	<p:inputMask id="txtCnpjcpf" value="#{mbConsultorio.strCNPJ}" mask="#{mbConsultorio.strMaskcnpjcpf}"/>
+        	
+        	<p:commandButton value="Validar" action="#{mbConsultorio.validarCNPJCPF()}" update=":form" />
+        	<p:commandButton value="Cancelar" action="index" update=":form" />
+		</p:panel>
+		
+		<p:panel rendered="#{mbConsultorio.strPassoTela == '2'}">	
+			<f:facet name="header">
+				Cadastrar o Endereço
+			</f:facet>		
+			<p:outputLabel for="txtCEP" value="Informe o CEP do Consultório" />
+        	<p:inputMask id="txtCEP" value="#{mbConsultorio.strCEP}" mask="99999-999"/>
+        	<p:commandButton value="Consultar" action="#{mbConsultorio.consultarCEP()}" update=":form" />
+		</p:panel>
+			
+		<p:panel  rendered="#{mbConsultorio.strPassoTela == '3'}" >
+			<f:facet name="header">
+				Dados do Consultório
+			</f:facet>	
+			 <p:panelGrid columns="2" style="width: 100%;height:80px;" styleClass="panelNoBorder" >
+			 	<p:outputLabel  value="CNPJ : "   styleClass="FontLabel"/>
+			 	<p:inputMask value="#{mbConsultorio.consultorio.con_cnpjcpf}" mask="#{mbConsultorio.strMaskcnpjcpf}" readonly="true"/>
+			    
+			 	<p:outputLabel  value="Nome do Consultório : "  required="true" styleClass="FontLabel"/>
+			    <p:inputText value="#{mbConsultorio.consultorio.con_nome}" maxlength="60" size="60" style="text-transform:uppercase;"/>
+			 	<p:outputLabel value="E-Mail : "  required="true" styleClass="FontLabel"/>
+				<p:inputText value="#{mbConsultorio.consultorio.con_email}" maxlength="60" size="60" style="text-transform:lowercase;"/>
+				<p:outputLabel value="Telefone : "  required="true" styleClass="FontLabel"/>
+				<p:inputMask value="#{mbConsultorio.consultorio.con_telefone}"/>
+				<p:outputLabel value="CEP : "  required="true" styleClass="FontLabel"/>
+				<p:inputMask value="#{mbConsultorio.consultorio.con_cep}" mask="99999-999" readonly="true"/>
+				<p:outputLabel value="Endereco : "  required="true" styleClass="FontLabel"/>
+				<p:inputText value="#{mbConsultorio.endereco.end_descricao}" size="70" readonly="true"/>
+				<p:outputLabel  value="Número : "  required="true" styleClass="FontLabel"/>
+			    <p:inputText value="#{mbConsultorio.consultorio.con_endnumero}" maxlength="10" size="10" style="text-transform:uppercase;" requiredMessage="Campo Nota Fiscal deve ser preenchido."   
+                                    converterMessage="Campo Nota fiscal é Numérico.">  
+                                <f:convertNumber pattern="#######" maxFractionDigits="0"/>
+                </p:inputText>  
+			    <p:outputLabel  value="Complemento : "  required="true" styleClass="FontLabel"/>
+			    <p:inputText value="#{mbConsultorio.consultorio.con_endcompl}" maxlength="70" size="70" style="text-transform:uppercase;"/>
+				<p:outputLabel value="Bairro : "  required="true" styleClass="FontLabel"/>
+				<p:inputText value="#{mbConsultorio.endereco.bar_codigo.bar_descricao}" size="70" readonly="true"/>
+				<p:outputLabel/>
+				<br/>
+				<p:outputLabel/>
+				<p:commandButton value="Cadastrar Consultório" action="#{mbConsultorio.cadastrarConsultorio()}" update=":form"  icon="ui-icon-star"/>
+		     </p:panelGrid>
+		</p:panel>	
+		
+		<p:panel  rendered="#{mbConsultorio.strPassoTela == '4'}" >
+			<f:facet name="header">
+				Consultório Cadastrado com Sucesso
+			</f:facet>	
+			 <p:panelGrid columns="2" style="width: 100%;height:80px;" styleClass="panelNoBorder" >
+			 	<p:outputLabel value="CNPJ : "   styleClass="FontLabel"/>
+			 	<p:outputLabel value="#{mbConsultorio.consultorio.con_cnpjcpf}" styleClass="FontLabelAzul"/>			    
+			 	<p:outputLabel value="Nome do Consultório : "  required="true" styleClass="FontLabel"/>
+			    <p:outputLabel value="#{mbConsultorio.consultorio.con_nome}"  styleClass="FontLabelAzul"/>
+			 	<p:outputLabel value="E-Mail : "  required="true" styleClass="FontLabel"/>
+				<p:outputLabel value="#{mbConsultorio.consultorio.con_email}" styleClass="FontLabelAzul"/>
+				<p:outputLabel value="Telefone : "  required="true" styleClass="FontLabel"/>
+				<p:outputLabel value="#{mbConsultorio.consultorio.con_telefone}" styleClass="FontLabelAzul"/>
+				<p:outputLabel value="CEP : "  required="true" styleClass="FontLabel"/>
+				<p:outputLabel value="#{mbConsultorio.consultorio.con_cep}" styleClass="FontLabelAzul"/>
+				<p:outputLabel value="Endereco : "  required="true" styleClass="FontLabel"/>
+				<p:outputLabel value="#{mbConsultorio.endereco.end_descricao}" styleClass="FontLabelAzul"/>
+				<p:outputLabel value="Número : "  required="true" styleClass="FontLabel"/>
+			    <p:outputLabel value="#{mbConsultorio.consultorio.con_endnumero}" styleClass="FontLabelAzul"/>   
+			    <p:outputLabel value="Complemento : "  required="true" styleClass="FontLabel"/>
+			    <p:outputLabel value="#{mbConsultorio.consultorio.con_endcompl}" styleClass="FontLabelAzul"/>
+				<p:outputLabel value="Bairro : "  required="true" styleClass="FontLabel"/>
+				<p:outputLabel value="#{mbConsultorio.endereco.bar_codigo.bar_descricao}" styleClass="FontLabelAzul"/>
+				<p:outputLabel/>
+				<br/>
+				<p:outputLabel/>
+				<p:commandButton value="OK" action="index" icon="ui-icon-star"/>
+				<p:outputLabel/>
+				<p:outputLabel value="Estamos Finalizando seu Cadastro e Configurando seu Ambiente" styleClass="FontLabel"/>
+		     </p:panelGrid>
+		
+		     
+		      
+		</p:panel>	
+		
+		
+		    	 
+		    
+
+	</h:form>
+    </h:body>
+     
+</html>

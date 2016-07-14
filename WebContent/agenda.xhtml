@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+     
+    <h:head>
+        <title>Agenda Disponível</title>
+        <style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+            .FontLabel {
+				font-size: 12px !important;
+				font-family: Verdana, Arial, Tahoma;
+				font-weight: bold;
+			}
+			.FontLabelAzul {
+				font-size: 12px !important;
+				font-family: Verdana, Arial, Tahoma;
+				font-weight: bold;
+				color: blue;
+			}
+			.customTxtWidth150px .ui-inputfield .ui-inputtext .ui-widget{
+		    	width:150px !important;
+			}
+			.panelNoBorder, .panelNoBorder tr, .panelNoBorder td{
+				border: hidden;
+				border-color: white;
+			}
+        </style>
+    </h:head>
+     
+    <h:body>
+    <h:form id="form" enctype="multipart/form-data">
+    	
+    	<p:panelGrid columns="2" cellpadding="10" styleClass="panelNoBorder">
+			<p:outputLabel for="txtConNome"   value="Consultório :" styleClass="FontLabel"/>
+			<p:outputLabel id="txtConNome"   value="#{mbAgenda.consultorioSelecionado.con_nome}" styleClass="FontLabelAzul"/>
+			 
+				          
+			<p:outputLabel for="txtEndereco" value="Endereço :" styleClass="FontLabel"/>
+			<p:outputLabel id="txtEndereco"   value="#{mbAgenda.consultorioSelecionado.con_endcompl}" styleClass="FontLabelAzul"/>
+			<!-- <p:inputText id="txtEndereco" size="30" disabled="true" value="#{mbAgenda.consultorioSelecionado.con_endcompl}"/>-->
+		</p:panelGrid>
+		
+		
+									
+									
+		<p:panel >
+			<p:dataTable id="dtAtendentes" var="ate" value="#{mbAgenda.lstAtendente}"  emptyMessage="Não foi encontrado nenhum Atendimento" 
+							selectionMode="single" selection="#{mbAgenda.atendenteselecionado}" rowKey="#{ate.ate_codigo}" rendered="#{mbAgenda.booEscolherAtendente == true}">  
+				<f:facet name="header">
+					 	Selecione quem ira lhe Atender!
+				</f:facet>
+				<p:ajax event="rowSelect" listener="#{mbAgenda.onRowSelectAtendente}"   update=":form"/>
+							        
+				<p:column headerText="Titulo">
+						<h:outputText value="#{ate.ate_titulo}"/>
+				</p:column>
+				<p:column headerText="Nome">
+						<h:outputText value="#{ate.ate_titulo} #{ate.ate_nome}"/>  
+				</p:column>			           
+			</p:dataTable>		
+		</p:panel>
+    	
+    	
+		<p:panel  rendered="#{mbAgenda.booSelecionouDataHora ==false}" id="panDatahora" >
+			<p:panel size="150" minSize="140" maxSize="160">
+				<p:dataTable id="dtDatas" var="age" value="#{mbAgenda.lstAgenda}"  emptyMessage="Selecione quem ira lhe Atender!" 
+							selectionMode="single" selection="#{mbAgenda.agendaDataselecionada}" rowKey="#{age.age_data1}"
+							scrollable="true" scrollHeight="110">
+					<f:facet name="header">
+					 	Selecione a melhor data!
+					</f:facet>
+					<p:ajax event="rowSelect" listener="#{mbAgenda.onRowSelectData}"   update=":form"/>
+							        
+					<p:column headerText="Data">
+						<h:outputText value="#{age.age_data1}">
+							<f:convertDateTime pattern="dd/MM/yyyy"/>  
+						</h:outputText>  
+					</p:column>
+					<p:column headerText="Dia">
+						<h:outputText value="#{age.age_data1}">
+							<f:convertDateTime pattern="EEEE"/>  
+						</h:outputText>  
+					</p:column>			           
+				</p:dataTable>
+			</p:panel>
+			
+			
+			<p:layout  minSize="40" maxSize="60" scrollHeight="100">
+				<p:layoutUnit position="center" style="border-width: 0px">
+					<p:dataTable id="dtHorarios" var="ageH" value="#{mbAgenda.lstAgendadodia}" selectionMode="single" 
+						selection="#{mbAgenda.agendaDatahoraselecionada}" rowKey="#{ageH.age_codigo}" emptyMessage="Selecione a Melhor Data"
+						scrollable="true" scrollHeight="115">
+						<f:facet name="header">
+						   	Selecione o melhor horário!
+						</f:facet>
+						<p:column headerText="Hora">
+							<h:outputText value="#{ageH.age_datahora}">
+								<f:convertDateTime pattern="HH:mm" type="time" dateStyle="short" timeZone="GMT-3" />
+							</h:outputText>  
+						</p:column>
+						<p:column headerText="Agendar">
+							<p:commandButton value="Agendar" icon="ui-icon-extlink" actionListener="#{mbAgenda.selecionarHorario()}" update=":form" /> 
+						</p:column>        
+					</p:dataTable>
+				</p:layoutUnit>
+			</p:layout>
+		
+		</p:panel>      
+		
+		<p:panel  rendered="#{mbAgenda.booSelecionouDataHora ==true}" id="panAgendar" >		
+			<p:panel>
+				<h:panelGrid columns="4" cellpadding="10" styleClass="ui-panelgrid-blank">		
+					<p:outputLabel value="Data :    "/>
+					<h:outputText value="#{mbAgenda.agendaDatahoraselecionada.age_data}">
+						<f:convertDateTime pattern="dd/MM/yyyy" type="time" timeZone="GMT-3"/>  
+					</h:outputText>  
+					<p:outputLabel value="Hora :    "/>
+					<h:outputText value="#{mbAgenda.agendaDatahoraselecionada.age_datahora}">
+							<f:convertDateTime pattern="HH:mm" type="time" dateStyle="short" timeZone="GMT-3" />  
+					</h:outputText>
+					<p:outputLabel value="Dia :    "/>
+					<h:outputText value="#{mbAgenda.agendaDatahoraselecionada.age_datahora}">
+							<f:convertDateTime pattern="EEEE" type="time" dateStyle="short" timeZone="GMT-3" />  
+					</h:outputText>
+				</h:panelGrid>
+				
+				<p:commandButton value="Escolher outro Horário" icon="ui-icon-extlink" actionListener="#{mbAgenda.closeAgenda}" update=":form" rendered="#{mbAgenda.booSucesso ==false}" />
+			</p:panel>
+			
+			<p:panel id="panIdentic" header="Identifique-se"  style="margin-bottom:20px" rendered="#{mbAgenda.booIdentifiquese ==true}">
+				<p:outputLabel for="txtCelular" value="Celular:" />
+        		<p:inputMask id="txtCelular" value="#{mbAgenda.strCelular}" mask="(99) 99999-9999"/>
+        		<p:commandButton value="Procurar" action="#{mbAgenda.buscarPessoa()}"
+					update=":form" />
+				
+			</p:panel>
+			<p:panel id="panNome" header="Confirme a Marcação"  style="margin-bottom:20px" rendered="#{mbAgenda.booSelecionouUsuario ==true}">
+				<h:panelGrid columns="1" cellpadding="10" styleClass="ui-panelgrid-blank">
+					<h:outputText value="#{mbAgenda.usuario.usu_nome}"/>
+					<p:commandButton value="Confirmar a Agenda" action="#{mbAgenda.salvarAgenda(false)}" update=":form" />
+				</h:panelGrid>				
+			</p:panel>
+			
+			<p:panel id="panCadastro" header="Cadastre-se"  style="margin-bottom:20px" rendered="#{mbAgenda.booCadastrandose ==true}">
+				<p:panelGrid columns="2" cellpadding="10" styleClass="ui-panelgrid-blank">
+				 	<p:outputLabel for="txtCelularCad" value="Celular:" />
+					<p:inputMask id="txtCelularCad" value="#{mbAgenda.usuario.usu_celular}" mask="(99) 99999-9999"/>
+					<p:outputLabel for="txtNomeCad" value="Nome:" />
+					<p:inputText id="txtNomeCad" value="#{mbAgenda.usuario.usu_nome}" />
+					<p:commandButton colqqspan="2" value="Cadastrar e Agendar" action="#{mbAgenda.salvarAgenda(true)}" update=":form" />
+				</p:panelGrid>				
+			</p:panel>
+			
+		</p:panel>	    
+
+
+
+
+
+		<!-- SUCESSO -->
+		<p:panel  rendered="#{mbAgenda.booSucesso == true}" id="panSucesso" >
+			<h:outputText value="Consulta Marcada com Sucesso"/>
+			<p:commandButton value="OK" action="#{mbAgenda.fecharAgenda()}"/>
+		</p:panel>
+		
+		
+		
+		
+		
+	</h:form>
+    </h:body>
+     
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+     
+    <h:head>
+        <title>Atendentes</title>
+       	<style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+            .FontLabel {
+				font-size: 12px !important;
+				font-family: Verdana, Arial, Tahoma;
+				font-weight: bold;
+			}
+			.FontLabelAzul {
+				font-size: 12px !important;
+				font-family: Verdana, Arial, Tahoma;
+				font-weight: bold;
+				color: blue;
+			}
+			.customTxtWidth150px .ui-inputfield .ui-inputtext .ui-widget{
+		    	width:150px !important;
+			}
+			.panelNoBorder, .panelNoBorder tr, .panelNoBorder td{
+				border: hidden;
+				border-color: white;
+			}
+        </style>
+    </h:head>
+     
+    <h:body>
+     <h:form id="form" enctype="multipart/form-data">
+    	
+    	<p:panel style="margin-bottom:20px;height:250px;width:100%"> 
+			<p:dataTable id="dtAtendentes" var="ate" value="#{mbConsultorio.lstAtendente}"  emptyMessage="Não foi encontrado nenhum Atendimento" 
+				    		selectionMode="single" selection="#{mbAtendente.atendenteSelecionado}" rowKey="#{ate.ate_codigo}">
+				<f:facet name="header">
+								 	Selecione o Atendente!
+				</f:facet>
+				<p:ajax event="rowSelect" listener="#{mbAtendente.onRowSelectAtendente}"   update=":form"/>
+										        
+				<p:column headerText="Atendente">
+						<h:outputText value="#{ate.ate_titulo}  #{ate.ate_nome}"/>
+				</p:column>
+				<p:column headerText="Especialidade">
+						<h:outputText value="#{ate.tat_codigo.tat_descricao}"/>
+				</p:column>
+			</p:dataTable>		
+		</p:panel>
+		
+		<p:panel style="margin-bottom:20px;height:350px;width:100%" header="Horários de Atendimento">
+			<p:panelGrid columns="3" cellpadding="10" styleClass="panelNoBorder">
+				<p:dataTable id="dtDia" var="dtDia" value="#{mbConsultorio.lstDiaSemana}"  selectionMode="single" 
+					    		 selection="#{mbAtendente.strDiaSemanaSelecionado}" rowKey="#{dtDia}" >
+					<f:facet name="header">
+									 	Selecione o Dia da Semana!
+					</f:facet>
+					<p:ajax event="rowSelect" listener="#{mbAtendente.onRowSelectDiaSemanaSelecionado}"   update=":form"/>
+											        
+					<p:column headerText="Dia da Semana">
+						<h:outputText value="#{dtDia}"/>
+					</p:column>
+				</p:dataTable>
+				
+				 
+					<p:dataTable id="dtHorarios" var="dtHorarios" value="#{mbAtendente.lstAteHorario}"  emptyMessage="Ainda não foi cadastrado" 
+					    		selectionMode="single" selection="#{mbAtendente.ateHorarioSelecionado}" rowKey="#{dtHorarios.hor_codigo}">
+						<f:facet name="header">
+										 	Selecione o Dia da Semana!
+						</f:facet>
+						<p:ajax event="rowSelect" listener="#{mbAtendente.onRowSelectDiaSemanaSelecionado}"   update=":form"/>
+												        
+						<p:column headerText="Início">
+							<h:outputText value="#{dtHorarios.hor_inicio}"/>
+						</p:column>
+						<p:column headerText="Fim">
+							<h:outputText value="#{dtHorarios.hor_fim}"/>
+						</p:column>
+					</p:dataTable>
+					<p:panelGrid columns="1" style="width: 100%;" rendered="true">
+						<p:commandButton value="Incluir" action="#{mbAtendente.gerarAgenda(5, 2016)}"/>
+						<p:commandButton value="Alterar" />
+						<p:commandButton value="Apagar" />
+					</p:panelGrid>
+				</p:panelGrid>
+	    </p:panel>
+					
+				
+				 
+				
+	
+		
+	<!-- <p:panelGrid columns="2" cellpadding="10" styleClass="panelNoBorder">
+						<f:facet name="header">
+							Horário
+						</f:facet>
+						<p:outputLabel for="txtHoraIni"   value="Início :" />
+						<p:inputText id="txtHoraIni" size="10" value="#{mbAtendente.ateHorarioSelecionado.hor_inicio}">
+							<f:convertDateTime pattern="HH:mm" timeZone="GMT-03:00"/>
+						</p:inputText>
+						<p:outputLabel for="txtHoraFim" value="Término :" />
+						<p:inputText id="txtHoraFim" size="10" value="#{mbAtendente.ateHorarioSelecionado.hor_fim}">
+							<f:convertDateTime pattern="HH:mm" timeZone="GMT-03:00"/>
+						</p:inputText>					
+					</p:panelGrid>	 -->
+
+		
+		
+		
+		
+		
+		
+	</h:form>
+    </h:body>
+     
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+     
+    <h:head>
+        <title>Atendentes</title>
+        <style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+        </style>
+    </h:head>
+     
+    <h:body>
+     <h:form id="form" enctype="multipart/form-data">
+    	
+    	<p:panel style="margin-bottom:20px;height:250px;width:100%"> 
+			<p:dataTable id="dtAtendentes" var="ate" value="#{mbConsultorio.lstAtendente}"  emptyMessage="Não foi encontrado nenhum Atendimento" 
+				    		selectionMode="single" selection="#{mbConsultorio.atendenteselecionado}" rowKey="#{ate.ate_codigo}">
+				<f:facet name="header">
+								 	Selecione o Atendente!
+				</f:facet>
+				<p:ajax event="rowSelect" listener="#{mbConsultorio.onRowSelectAtendente}"   update=":form"/>
+										        
+				<p:column headerText="Atendente">
+						<h:outputText value="#{ate.ate_titulo}  #{ate.ate_nome}"/>
+				</p:column>
+				
+				<p:column headerText="Duração">
+						<h:outputText value="#{ate.ate_duracao}"/>
+				</p:column>
+				
+				<p:column headerText="Segunda-Feira">
+						<h:outputText value="das #{ate.ate_segunda_ini} as #{ate.ate_segunda_fim}"/>
+				</p:column>
+				
+				<p:column headerText="Terça-Feira">
+						<h:outputText value="das #{ate.ate_terca_ini} as #{ate.ate_terca_fim}"/>
+				</p:column>
+				
+				<p:column headerText="Quarta-Feira">
+						<h:outputText value="das #{ate.ate_quarta_ini} as #{ate.ate_quarta_fim}"/>
+				</p:column>
+				
+				<p:column headerText="Quinta-Feira">
+						<h:outputText value="das #{ate.ate_quinta_ini} as #{ate.ate_quinta_fim}"/>
+				</p:column>
+				
+				<p:column headerText="Sexta-Feira">
+						<h:outputText value="das #{ate.ate_sexta_ini} as #{ate.ate_sexta_fim}"/>
+				</p:column>
+				
+				<p:column headerText="Sabado">
+						<h:outputText value="das #{ate.ate_sabado_ini} as #{ate.ate_sabado_fim}"/>
+				</p:column>
+				
+				<p:column headerText="Domingo">
+						<h:outputText value="das #{ate.ate_domingo_ini} as #{ate.ate_domingo_fim}"/>
+				</p:column>
+						           
+			</p:dataTable>		
+		</p:panel>
+		
+		
+		<p:panel style="margin-bottom:20px;height:350px;width:100%" header="Horários de Atendimento">
+			
+			<p:panelGrid columns="4" cellpadding="10" styleClass="panelNoBorder">
+			  
+				<p:panelGrid columns="2" cellpadding="10" styleClass="panelNoBorder">
+					<f:facet name="header">
+						Segunda-Feira
+					</f:facet>
+					<p:outputLabel for="txtSegundaIni"   value="Início :" />
+						<p:inputText id="txtSegundaIni" size="10" value="#{mbConsultorio.atendenteselecionado.ate_segunda_ini}" >
+						<f:convertDateTime pattern="HH:mm" timeZone="GMT-03:00"/>
+						</p:inputText>
+					
+					<p:outputLabel for="txtSegundaFim" value="Término :" />
+					<p:inputText id="txtSegundaFim" size="10" value="#{mbConsultorio.atendenteselecionado.ate_segunda_fim}" >
+						<f:convertDateTime pattern="HH:mm" timeZone="GMT-03:00"/>
+					</p:inputText>					
+				</p:panelGrid>		
+				
+				<p:panelGrid columns="2" cellpadding="10" styleClass="panelNoBorder">
+					<f:facet name="header">
+						Terça-Feira
+					</f:facet>
+					<p:outputLabel for="txtTercaIni"   value="Início :" />
+					<p:inputText id="txtTercaIni" size="10" value="#{mbConsultorio.atendenteselecionado.ate_terca_ini}" />
+					<p:outputLabel for="txtTercaFim" value="Término :" />
+					<p:inputText id="txtTercaFim" size="10" value="#{mbConsultorio.atendenteselecionado.ate_terca_fim}" />					
+				</p:panelGrid>	
+				
+				<p:panelGrid columns="2" cellpadding="10" styleClass="panelNoBorder">
+					<f:facet name="header">
+						Quarta-Feira
+					</f:facet>
+					<p:outputLabel for="txtQuartaIni"   value="Início :" />
+					<p:inputText id="txtQuartaIni" size="10" value="#{mbConsultorio.atendenteselecionado.ate_quarta_ini}" />
+					<p:outputLabel for="txtQuartaFim" value="Término :" />
+					<p:inputText id="txtQuartaFim" size="10" value="#{mbConsultorio.atendenteselecionado.ate_quarta_fim}" />					
+				</p:panelGrid>	
+				
+				<p:panelGrid columns="2" cellpadding="10" styleClass="panelNoBorder">
+					<f:facet name="header">
+						Quinta-Feira
+					</f:facet>
+					<p:outputLabel for="txtQuintaIni"   value="Início :" />
+					<p:inputText id="txtQuintaIni" size="10" value="#{mbConsultorio.atendenteselecionado.ate_quinta_ini}" />
+					<p:outputLabel for="txtQuintaFim" value="Término :" />
+					<p:inputText id="txtQuintaFim" size="10" value="#{mbConsultorio.atendenteselecionado.ate_quinta_fim}" />					
+				</p:panelGrid>	
+				
+				<p:panelGrid columns="2" cellpadding="10" styleClass="panelNoBorder">
+					<f:facet name="header">
+						Sexta-Feira
+					</f:facet>
+					<p:outputLabel for="txtSextaIni"   value="Início :" />
+					<p:inputText id="txtSextaIni" size="10" value="#{mbConsultorio.atendenteselecionado.ate_sexta_ini}" />
+					<p:outputLabel for="txtSextaFim" value="Término :" />
+					<p:inputText id="txtSextaFim" size="10" value="#{mbConsultorio.atendenteselecionado.ate_sexta_fim}" />					
+				</p:panelGrid>	
+				
+				<p:panelGrid columns="2" cellpadding="10" styleClass="panelNoBorder">
+					<f:facet name="header">
+						Sábado
+					</f:facet>
+					<p:outputLabel for="txtSabadoIni"   value="Início :" />
+					<p:inputText id="txtSabadoIni" size="10" value="#{mbConsultorio.atendenteselecionado.ate_sabado_ini}" />
+					<p:outputLabel for="txtSabadoFim" value="Término :" />
+					<p:inputText id="txtSabadoFim" size="10" value="#{mbConsultorio.atendenteselecionado.ate_sabado_fim}"/>					
+				</p:panelGrid>	
+				
+				<p:panelGrid columns="2" cellpadding="10" styleClass="panelNoBorder">
+					<f:facet name="header">
+						Domingo
+					</f:facet>
+					<p:outputLabel for="txtDomingoIni"   value="Início :" />
+					<p:inputText id="txtDomingoIni" size="10" value="#{mbConsultorio.atendenteselecionado.ate_domingo_ini}" />
+					<p:outputLabel for="txtDomingoFim" value="Término :" />
+					<p:inputText id="txtDomingoFim" size="10" value="#{mbConsultorio.atendenteselecionado.ate_domingo_fim}" />					
+				</p:panelGrid>	
+				
+				<p:panelGrid columns="2" cellpadding="10" styleClass="panelNoBorder">
+					<f:facet name="header">
+						Hora do Almoço
+					</f:facet>
+					<p:outputLabel for="txtAlmocoIni"   value="Início :" />
+					<p:inputText id="txtAlmocoIni" size="10" value="#{mbConsultorio.atendenteselecionado.ate_almoco}" />
+					<p:outputLabel for="txtAlmocoFim" value="Término :" />
+					<p:inputText id="txtAlmocoFim" size="10" value="#{mbConsultorio.atendenteselecionado.ate_almoco_fim}"/>					
+				</p:panelGrid>	
+				<p:panelGrid columns="2" cellpadding="10" styleClass="panelNoBorder">
+					<f:facet name="header">
+						Duração do Atendimento    .
+					</f:facet>
+					<p:inputText id="txtDuracao" size="2" value="#{mbConsultorio.atendenteselecionado.ate_duracao}" />
+					<p:outputLabel for="txtDuracao"   value="Minutos" size="10"/>	
+					
+					<p:inputText id="txkkk" size="2" value="#{mbConsultorio.atendenteselecionado.ate_segunda_ini}" />
+					<p:outputLabel for="txkkk"   value="Minutos" size="10"/>					
+				</p:panelGrid>
+				 
+				<p:commandButton value="Salva1" icon="ui-icon-star"  action="#{mbConsultorio.cadastrarAtendente()}"> 	</p:commandButton>
+				
+			</p:panelGrid>
+			
+			
+		</p:panel>
+		
+		
+
+
+
+		
+		
+		
+		
+		
+		
+	</h:form>
+    </h:body>
+     
+</html>

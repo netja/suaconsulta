@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<style type="text/css">
+		.ui-widget {
+			font-size: 11px !important;
+			font-family: Verdana, Arial, Tahoma;
+			font-weight: light;
+		}
+		.panelNoBorder, .panelNoBorder tr, .panelNoBorder td{
+			border: hidden;
+			border-color: white;
+		}
+		.FontLabel {
+			font-size: 11px !important;
+			font-family: Verdana, Arial, Tahoma;
+			font-weight: bold;
+		}
+		.FontBene {
+			font-size: 12px !important;
+			font-family: Verdana, Arial, Tahoma;
+			font-weight: bold;
+			color: black;
+		}
+		.FontTextolabel {
+			font-size: 12px !important;
+			font-family: Verdana, Arial, Tahoma;
+			font-weight: bold;
+			color: blue;
+		}
+	</style>
+	
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+	<script src="jquery.geocomplete.js"></script> 
+ <!--  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> -->
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script> 
+  <script type="text/javascript" src="js/gmaps.js"></script> 
+	
+	
+</h:head>
+
+<h:body>
+	<p:ajaxStatus
+		style="width:64px;height:64px;position:fixed;right:5px;bottom:5px">
+		<f:facet name="start">
+			<p:graphicImage value="/images/loading.gif" />
+		</f:facet>
+
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
+
+	<h:form id="form" enctype="multipart/form-data">
+		<p:growl id="msgs" showDetail="false" showSummary="true" />
+		
+		<p:panelGrid columns="2" style="width: 100%;height:80px;" >
+			<f:facet name="header" >
+					CareChannel
+			</f:facet>
+			<p:layout style="min-height:80px;height:80px;">
+			    <p:layoutUnit position="west" resizable="true" size="200" minSize="40" maxSize="200" >
+			        <p:graphicImage value="/images/Logo.png" width="170" height="70"/>
+			    </p:layoutUnit>
+			 
+			    <p:layoutUnit position="center" style="border-width: 0px">
+			        Aqui vai alguma Informação
+			       <input id='gmaps-input-address' placeholder='Start typing a place name...' type='text' />
+      <br/>
+      <br/>
+      Latitude: <span id='gmaps-output-latitude'></span>
+      <br/>
+      Longitude: <span id='gmaps-output-longitude'></span>
+      <br/>
+			    </p:layoutUnit>
+			    
+			    <!-- 
+			    <p:layoutUnit position="east" resizable="true" size="150" minSize="150" maxSize="200" >
+			    	<p:panelGrid columns="1" style="width: 100%; " styleClass="panelNoBorder">
+			    		<h:outputText value="Não é Cadastrado?" style="font-weight:bold"/>
+				        <p:button outcome="consultorio"  value="Cadastre-se" icon="ui-icon-star"> 	</p:button>
+					</p:panelGrid>
+			    </p:layoutUnit> -->
+			</p:layout>
+		</p:panelGrid>
+		
+		
+		<p:panelGrid columns="2"  layout="grid">
+		    	<f:facet name="header">					
+				</f:facet>
+				<p:panel header="Localize e Agende sua Consulta" style="margin-bottom:20px;height:550px">
+			        <p:panelGrid columns="3" style="width: 100%;" rendered="false">			
+						<h:outputLabel for="strPrestador" value="Informe o CRM do Seu Médico : "  required="true" styleClass="FontLabel"/>
+						<p:inputText id="strPrestador" value="#{mbSuaconsulta.strPesquisar}" maxlength="50" size="50" style="text-transform:uppercase;"/>
+						<p:commandButton value="Buscar Médico" action="#{mbSuaconsulta.pesquisaAtendente()}" rendered="true"  disabled="#{mbSuaconsulta.strTat_codigo == '0'}"
+								update=":form:msgs, :form" icon="ui-icon-check"/>
+						<f:facet name="footer">
+							Buscar por Localidade	
+						</f:facet>
+					</p:panelGrid>
+					
+					<p:panelGrid columns="2" style="width: 100%;">						
+						<h:outputLabel for="selAat" value="Selecione a Especialidade : " styleClass="FontLabel" />
+						<p:selectOneMenu id="selAat" value="#{mbSuaconsulta.strTat_codigo}">
+		                      <f:selectItem itemLabel="Selecione" itemValue="0"/>
+		                      <f:selectItems value="#{mbTipoAtendimento.tipoAtendimentos}" var="tipoAtendimentos" itemLabel="#{tipoAtendimentos.tat_descricao}" itemValue="#{tipoAtendimentos.tat_codigo}" />
+		                      
+		                      <p:ajax listener="#{mbSuaconsulta.tipoAtendimentoSelecionado()}"  update="form"/>		                      
+		                </p:selectOneMenu>
+		                
+		            </p:panelGrid>
+		            
+		            <p:panelGrid columns="3" style="width: 100%;" rendered="#{mbSuaconsulta.strTat_codigo != '0'}">
+			        	<h:outputLabel for="strRegiao" value="Listar Próximo de : "  required="true" styleClass="FontLabel"/>
+						<p:inputText id="strRegiao" value="#{mbSuaconsulta.strPesquisar}" maxlength="30" size="30" style="text-transform:uppercase;"/>
+						<h:outputLabel/>
+						
+						
+				        
+				        
+						<p:commandButton value="Pesquisar" action="#{mbSuaconsulta.pesquisaPorCep()}" rendered="true"  disabled="#{mbSuaconsulta.strTat_codigo == '0'}"
+									update=":form:msgs, :form" icon="ui-icon-check"/>
+						
+						
+						<f:facet name="header">
+								Buscar por Localidade	
+						</f:facet>
+		            </p:panelGrid>
+		            
+		            <p:dataTable id="dtProfissionais" value="#{mbSuaconsulta.lstConsultorios}" var="con"
+						style="text-align: center;" emptyMessage="Nenhum Atendente Encontrado." rendered="false">
+						
+						<p:column headerText="Titulo" style="width:10%">
+							<h:outputText value="#{con.con_nome}" />
+						</p:column>
+		            </p:dataTable>
+		            
+		            <p:separator style="height:20px" /> 
+		            <p:gmap center="#{mbSuaconsulta.strLocalizacao}" zoom="15" type="ROADMAP" style="width:100%;height:400px" model="#{mbSuaconsulta.simpleModel}"> <!-- type="HYBRID" -->
+		            <!-- "-23.4879714,-46.422761,17"  Vila Mara -->
+		            	<!-- http://www.primefaces.org/showcase/ui/data/gmap/geocode.xhtml -->
+		            	<p:ajax event="overlaySelect" listener="#{mbSuaconsulta.onMarkerSelect}" update=":form:msgs"   /> <!-- update=":form:msgs, :form" -->		            	
+		            	 
+		            	
+		            	<p:gmapInfoWindow id="infoWindow">		            		
+				            <p:panelGrid  columns="1" cellpadding="10" styleClass="panelNoBorder">
+				               <h:outputText value=""/>
+				               <h:outputText value="#{mbSuaconsulta.consultorioSelecionado.con_nome}"  styleClass="FontLabel"/>
+				               <p:commandButton value="Abrir Agenda" action="#{mbAgenda.viewAgenda(mbSuaconsulta.consultorioSelecionado)}"/>
+				            </p:panelGrid>
+				        </p:gmapInfoWindow> 
+				        
+				        
+		            </p:gmap>
+			    </p:panel>
+								
+				<p:panel style="margin-bottom:20px;height:550px"> <!-- header="Cabeçalho" footer="Rodape"  -->
+					<p:panel header="Área do Paciente">
+				        <p:panelGrid columns="2" cellpadding="10" styleClass="panelNoBorder" rendered="#{mbUsuario.usuario.usu_codigo == null}">
+				          <h:outputText for="txtEmail"   value="E-Mail" styleClass="FontLabel"/>
+				          <p:inputText id="txtEmail" value="#{mbUsuario.strEmail}" maxlength="50" size="30" style="text-transform:lowercase;"/>
+				          
+				          <p:outputLabel for="txtCelular" value="Celular:" styleClass="FontLabel"/>
+			        	  <p:inputMask id="txtCelular" value="#{mbUsuario.strCelular}" mask="(99) 99999-9999"/>
+			        	  
+			        	  <p:commandButton value="Entrar" action="#{mbUsuario.buscarEditarUsuario()}" update=":form:msgs, :form"/>
+			        	  <p:graphicImage value="/images/login-fb.png" width="170" height="40"/>
+				        </p:panelGrid>
+				        
+				        <p:panelGrid columns="2" cellpadding="10" styleClass="panelNoBorder" rendered="#{mbUsuario.usuario.usu_codigo != null}">
+							<p:outputLabel for="txtNomeArea"   value="Nome :" styleClass="FontLabel"/>
+							<p:outputLabel id="txtNomeArea" size="30" disabled="true" value="#{mbUsuario.usuario.usu_nome}" styleClass="FontTextolabel"/>
+								          
+							<p:outputLabel for="txtCelularArea" value="Celular : " styleClass="FontLabel"/>
+							<p:outputLabel id="txtCelularArea" size="30" disabled="true" value="#{mbUsuario.usuario.usu_celular}" mask="(99) 99999-9999" styleClass="FontTextolabel"/>
+							
+							<p:commandButton value="Entrar" update=":form:msgs"  action="#{mbUsuario.editarUsuario()}"/>
+						</p:panelGrid>
+				    </p:panel>
+				    
+				    <br/>
+				    <p:panel header="Seu Consultório" style="height:380px;">
+				    	<p:outputLabel value="Deixe sua Agenda Disponível 24H para seus pacientes" styleClass="FontBene" />
+				     		<br/>
+				     		<br/>
+					        <p:panelGrid columns="2" cellpadding="10">
+					           <p:commandButton  value="Cadastre seu Consultório" icon="ui-icon-star"  action="#{mbConsultorio.NovoCadastro}"> 	</p:commandButton>
+					           <p:commandButton  value="Meu Consultório" icon="ui-icon-star"  action="#{mbConsultorio.consultorioADM}"> 	</p:commandButton>
+					        
+					        </p:panelGrid>
+					    
+					    <!--  <p:separator style="height:20px" /> -->
+					    <p:separator/>
+					    <br/>
+					    <p:fieldset legend="Benefícios" style="margin-bottom:20px">
+					        <p:panelGrid columns="1" cellpadding="10" styleClass="panelNoBorder">
+					           <p:outputLabel value="* Receba novos pacientes" styleClass="FontBene" />
+					           <p:outputLabel value="* Permita agendamentos a qualquer hora" styleClass="FontBene"/>
+					           <p:outputLabel value="* Economize telefone e otimize seu consultório"  styleClass="FontBene"/>
+					           <p:outputLabel value="* Apareça...."  styleClass="FontBene" />
+					        </p:panelGrid>
+					    </p:fieldset>
+				    </p:panel>
+			    </p:panel>
+		</p:panelGrid>
+
+		
+	</h:form>
+</h:body>
+</html>
