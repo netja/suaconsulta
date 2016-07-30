@@ -104,6 +104,10 @@ public class AgendaBean implements Serializable {
 		System.out.println(consultorioSelecionado.getCon_nome());
 	 	
 		setBooEscolherAtendente(true);
+		setBooSelecionouDataHora(false);
+		setBooCadastrandose(false);
+		setBooSelecionouUsuario(false);
+		setStrCelular("");
 		abrirAtendente();
 				 
         Map<String,Object> options = new HashMap<String, Object>();
@@ -281,6 +285,7 @@ public class AgendaBean implements Serializable {
 				setBooSelecionouUsuario(false);				
 				setBooCadastrandose(true);
 				usuario = new Usuario();
+				usuario.setUsu_celular(strCelular);
 			}
 			FacesContext.getCurrentInstance().addMessage(
 					null,

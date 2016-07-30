@@ -114,7 +114,10 @@ public class SuaconsultaBean implements Serializable {
 	
 	public void tipoAtendimentoSelecionado(){
     	FacesMessage msg = new FacesMessage("tipoAtendimentoSelecionado ");
-        FacesContext.getCurrentInstance().addMessage(null, msg);        
+        FacesContext.getCurrentInstance().addMessage(null, msg);   
+        lstConsultorios = null;
+        lstAtendentes = null;
+        simpleModel = new DefaultMapModel();
     }
 	
 	public void pesquisaAtendente(){

@@ -140,9 +140,9 @@ public class AtendenteDAO implements Serializable {
 			long itat_codigo = Long.parseLong(String.valueOf(strTat_codigo));
 			
 			//Query  query  = session.createQuery("from Atendente a WHERE a.con_codigo.con_cep=:con_cep AND a.tat_codigo=:tat_codigo)");
-			Query  query  = session.createQuery("from Consultorio c WHERE c.con_codigo IN (SELECT a.con_codigo FROM Atendente a WHERE a.con_codigo.con_cep LIKE :con_cep )");//AND a.tat_codigo=:tat_codigo
+			Query  query  = session.createQuery("from Consultorio c WHERE c.con_codigo IN (SELECT a.con_codigo FROM Atendente a WHERE a.con_codigo.con_cep LIKE :con_cep AND a.tat_codigo.tat_codigo = :tat_codigo)");//
 			query.setParameter("con_cep", strPesquisar);
-			//query.setParameter("tat_codigo", itat_codigo);
+			query.setParameter("tat_codigo", itat_codigo);
 			System.out.println("Vai Abrir por Cep");
 			//List<Atendente> lstAtendente =   query.list();
 			

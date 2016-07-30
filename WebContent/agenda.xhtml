@@ -35,11 +35,11 @@
     <h:form id="form" enctype="multipart/form-data">
     	
     	<p:panelGrid columns="2" cellpadding="10" styleClass="panelNoBorder">
-			<p:outputLabel for="txtConNome"   value="Consultório :" styleClass="FontLabel"/>
+			<p:outputLabel for="txtConNome"  value="Consultório" styleClass="FontLabel"/>
 			<p:outputLabel id="txtConNome"   value="#{mbAgenda.consultorioSelecionado.con_nome}" styleClass="FontLabelAzul"/>
 			 
 				          
-			<p:outputLabel for="txtEndereco" value="Endereço :" styleClass="FontLabel"/>
+			<p:outputLabel for="txtEndereco" value="Endereço" styleClass="FontLabel"/>
 			<p:outputLabel id="txtEndereco"   value="#{mbAgenda.consultorioSelecionado.con_endcompl}" styleClass="FontLabelAzul"/>
 			<!-- <p:inputText id="txtEndereco" size="30" disabled="true" value="#{mbAgenda.consultorioSelecionado.con_endcompl}"/>-->
 		</p:panelGrid>
@@ -47,9 +47,10 @@
 		
 									
 									
-		<p:panel >
+		<p:panel size="250" minSize="240" maxSize="260">
 			<p:dataTable id="dtAtendentes" var="ate" value="#{mbAgenda.lstAtendente}"  emptyMessage="Não foi encontrado nenhum Atendimento" 
-							selectionMode="single" selection="#{mbAgenda.atendenteselecionado}" rowKey="#{ate.ate_codigo}" rendered="#{mbAgenda.booEscolherAtendente == true}">  
+							selectionMode="single" selection="#{mbAgenda.atendenteselecionado}" rowKey="#{ate.ate_codigo}" 
+							rendered="#{mbAgenda.booEscolherAtendente == true}" scrollable="true" scrollHeight="80">  
 				<f:facet name="header">
 					 	Selecione quem ira lhe Atender!
 				</f:facet>
@@ -66,7 +67,6 @@
     	
     	
 		<p:panel  rendered="#{mbAgenda.booSelecionouDataHora ==false}" id="panDatahora" >
-			<p:panel size="150" minSize="140" maxSize="160">
 				<p:dataTable id="dtDatas" var="age" value="#{mbAgenda.lstAgenda}"  emptyMessage="Selecione quem ira lhe Atender!" 
 							selectionMode="single" selection="#{mbAgenda.agendaDataselecionada}" rowKey="#{age.age_data1}"
 							scrollable="true" scrollHeight="110">
@@ -86,11 +86,8 @@
 						</h:outputText>  
 					</p:column>			           
 				</p:dataTable>
-			</p:panel>
 			
 			
-			<p:layout  minSize="40" maxSize="60" scrollHeight="100">
-				<p:layoutUnit position="center" style="border-width: 0px">
 					<p:dataTable id="dtHorarios" var="ageH" value="#{mbAgenda.lstAgendadodia}" selectionMode="single" 
 						selection="#{mbAgenda.agendaDatahoraselecionada}" rowKey="#{ageH.age_codigo}" emptyMessage="Selecione a Melhor Data"
 						scrollable="true" scrollHeight="115">
@@ -106,24 +103,22 @@
 							<p:commandButton value="Agendar" icon="ui-icon-extlink" actionListener="#{mbAgenda.selecionarHorario()}" update=":form" /> 
 						</p:column>        
 					</p:dataTable>
-				</p:layoutUnit>
-			</p:layout>
-		
+					
 		</p:panel>      
 		
 		<p:panel  rendered="#{mbAgenda.booSelecionouDataHora ==true}" id="panAgendar" >		
 			<p:panel>
 				<h:panelGrid columns="4" cellpadding="10" styleClass="ui-panelgrid-blank">		
-					<p:outputLabel value="Data :    "/>
-					<h:outputText value="#{mbAgenda.agendaDatahoraselecionada.age_data}">
+					<p:outputLabel value="Data" styleClass="FontLabel"/>
+					<h:outputText value="#{mbAgenda.agendaDatahoraselecionada.age_data}" styleClass="FontLabelAzul">
 						<f:convertDateTime pattern="dd/MM/yyyy" type="time" timeZone="GMT-3"/>  
 					</h:outputText>  
-					<p:outputLabel value="Hora :    "/>
-					<h:outputText value="#{mbAgenda.agendaDatahoraselecionada.age_datahora}">
+					<p:outputLabel value="Hora" styleClass="FontLabel"/>
+					<h:outputText value="#{mbAgenda.agendaDatahoraselecionada.age_datahora}" styleClass="FontLabelAzul">
 							<f:convertDateTime pattern="HH:mm" type="time" dateStyle="short" timeZone="GMT-3" />  
 					</h:outputText>
-					<p:outputLabel value="Dia :    "/>
-					<h:outputText value="#{mbAgenda.agendaDatahoraselecionada.age_datahora}">
+					<p:outputLabel value="Dia" styleClass="FontLabel"/>
+					<h:outputText value="#{mbAgenda.agendaDatahoraselecionada.age_datahora}" styleClass="FontLabelAzul">
 							<f:convertDateTime pattern="EEEE" type="time" dateStyle="short" timeZone="GMT-3" />  
 					</h:outputText>
 				</h:panelGrid>
@@ -132,29 +127,27 @@
 			</p:panel>
 			
 			<p:panel id="panIdentic" header="Identifique-se"  style="margin-bottom:20px" rendered="#{mbAgenda.booIdentifiquese ==true}">
-				<p:outputLabel for="txtCelular" value="Celular:" />
+				<p:outputLabel for="txtCelular" value="Celular  " styleClass="FontLabel"/>
         		<p:inputMask id="txtCelular" value="#{mbAgenda.strCelular}" mask="(99) 99999-9999"/>
-        		<p:commandButton value="Procurar" action="#{mbAgenda.buscarPessoa()}"
-					update=":form" />
-				
+        		<p:commandButton value="Procurar" action="#{mbAgenda.buscarPessoa()}" update=":form" />				
 			</p:panel>
+			
 			<p:panel id="panNome" header="Confirme a Marcação"  style="margin-bottom:20px" rendered="#{mbAgenda.booSelecionouUsuario ==true}">
 				<h:panelGrid columns="1" cellpadding="10" styleClass="ui-panelgrid-blank">
-					<h:outputText value="#{mbAgenda.usuario.usu_nome}"/>
+					<h:outputText value="#{mbAgenda.usuario.usu_nome}" styleClass="FontLabelAzul"/>
 					<p:commandButton value="Confirmar a Agenda" action="#{mbAgenda.salvarAgenda(false)}" update=":form" />
 				</h:panelGrid>				
 			</p:panel>
 			
 			<p:panel id="panCadastro" header="Cadastre-se"  style="margin-bottom:20px" rendered="#{mbAgenda.booCadastrandose ==true}">
 				<p:panelGrid columns="2" cellpadding="10" styleClass="ui-panelgrid-blank">
-				 	<p:outputLabel for="txtCelularCad" value="Celular:" />
+				 	<p:outputLabel for="txtCelularCad" value="Celular" styleClass="FontLabel"/>
 					<p:inputMask id="txtCelularCad" value="#{mbAgenda.usuario.usu_celular}" mask="(99) 99999-9999"/>
-					<p:outputLabel for="txtNomeCad" value="Nome:" />
-					<p:inputText id="txtNomeCad" value="#{mbAgenda.usuario.usu_nome}" />
+					<p:outputLabel for="txtNomeCad" value="Nome" styleClass="FontLabel"/>
+					<p:inputText id="txtNomeCad" value="#{mbAgenda.usuario.usu_nome}" size="40" onkeyup="this.value = this.value.toUpperCase()"/>
 					<p:commandButton colqqspan="2" value="Cadastrar e Agendar" action="#{mbAgenda.salvarAgenda(true)}" update=":form" />
 				</p:panelGrid>				
-			</p:panel>
-			
+			</p:panel>			
 		</p:panel>	    
 
 
@@ -163,7 +156,7 @@
 
 		<!-- SUCESSO -->
 		<p:panel  rendered="#{mbAgenda.booSucesso == true}" id="panSucesso" >
-			<h:outputText value="Consulta Marcada com Sucesso"/>
+			<h:outputText value="Consulta Marcada com Sucesso"  styleClass="FontLabelAzul"/>
 			<p:commandButton value="OK" action="#{mbAgenda.fecharAgenda()}"/>
 		</p:panel>
 		

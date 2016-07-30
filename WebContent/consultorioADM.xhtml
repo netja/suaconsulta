@@ -45,7 +45,7 @@
 	            <p:ajax update="form"/>	
 	        </p:selectOneButton>
      
-			<p:outputLabel for="txtCnpjcpf" value="CNPJ:" />
+			<p:outputLabel for="txtCnpjcpf" value="CNPJ  " styleClass="FontLabelAzul"/>
         	<p:inputMask id="txtCnpjcpf" value="#{mbConsultorio.strCNPJ}" mask="#{mbConsultorio.strMaskcnpjcpf}"/>
         	
         	<p:commandButton value="Validar" action="#{mbConsultorio.consultarCNPJCPF()}" update=":form" />
@@ -59,11 +59,11 @@
 			<p:layout style="min-height:80px;height:100px;">
 			    <p:layoutUnit position="center" resizable="true" style="border-width: 1px">
 			        <p:panelGrid columns="2" cellpadding="10" styleClass="panelNoBorder" >
-							<p:outputLabel for="txtConNome"   value="Consultório :"  styleClass="FontLabel"/>
-							<p:inputText id="txtConNome" size="30" disabled="true" value="#{mbConsultorio.consultorio.con_nome}"/>
+							<p:outputLabel for="txtConNome"   value="Consultório "  styleClass="FontLabel"/>
+							<p:outputLabel id="txtConNome"   value="#{mbAgenda.consultorioSelecionado.con_nome}" styleClass="FontLabelAzul"/>
 								          
-							<p:outputLabel for="txtEndereco" value="Endereço :"  styleClass="FontLabel"/>
-							<p:inputText id="txtEndereco" size="30" disabled="true" value="#{mbConsultorio.consultorio.con_endcompl}"/>
+							<p:outputLabel for="txtEndereco" value="Endereço "  styleClass="FontLabel"/>
+							<p:outputLabel id="txtEndereco"   value="#{mbAgenda.consultorioSelecionado.con_endcompl}" styleClass="FontLabelAzul"/>
 							
 							
 						</p:panelGrid>
