@@ -10,18 +10,30 @@
             .ui-widget {
                 font-size: 90%;
             }
+            .FontLabel {
+				font-size: 12px !important;
+				font-family: Verdana, Arial, Tahoma;
+				font-weight: bold;
+			}
+			.FontLabelAzul {
+				font-size: 12px !important;
+				font-family: Verdana, Arial, Tahoma;
+				font-weight: bold;
+				color: blue;
+			}
+			
         </style>
     </h:head>
      
     <h:body>
     <h:form id="form" enctype="multipart/form-data">
     	
-    	<p:panelGrid columns="2" cellpadding="10" styleClass="panelNoBorder">
-			<p:outputLabel for="txtNome"   value="Nome :" />
-			<p:inputText id="txtNome" size="30" disabled="true" value="#{mbUsuario.usuario.usu_nome}"/>
+    	<p:panelGrid columns="2" cellpadding="10" styleClass="panelNoBorder" >
+			<p:outputLabel for="txtNome"   value="Nome : " styleClass="FontLabel" />
+			<p:outputLabel id="txtNome" value="#{mbUsuario.usuario.usu_nome}" styleClass="FontLabelAzul"/>
 				          
-			<p:outputLabel for="txtCelular" value="Celular : " />
-			<p:inputText id="txtCelular" size="30" disabled="true" value="#{mbUsuario.usuario.usu_celular}" mask="(99) 99999-9999"/>
+			<p:outputLabel for="txtCelular" value="Celular : " styleClass="FontLabel"/>
+			<p:outputLabel id="txtCelular" value="#{mbUsuario.usuario.usu_celular}" mask="(99) 99999-9999" styleClass="FontLabelAzul"/>
 		</p:panelGrid>
 		
 		<p:panel >
@@ -64,12 +76,13 @@
 		</p:panel>
 		
 		<p:panelGrid  columns="2" cellpadding="10" styleClass="panelNoBorder">
+			<f:facet name="header">
+					 		Suas Consultas Realizadas!
+			</f:facet>
 			<p:dataTable id="dtAgendaRealizadaPorAte" value="#{mbUsuario.lstAgendaEfetuadasPorAtendente}" var="ageEfe"
 						selectionMode="single" selection="#{mbUsuario.agendaSelecionada}"  rowKey="#{ageEfe.ate_codigo}"
 						style="text-align: center;" emptyMessage="Você não passou por nenhuma consulta" rendered="true">
-						<f:facet name="header">
-					 		Suas Consultas Realizadas!
-						</f:facet>
+						
 						
 						<p:ajax event="rowSelect" listener="#{mbUsuario.onRowSelectAgendaRealizasa}"   update=":form"/>
 						
@@ -86,9 +99,7 @@
 		    <p:dataTable id="dtAgendaRealizada" value="#{mbUsuario.lstAgendaEfetuadas}" var="ageEfe"
 						selectionMode="single" selection="#{mbUsuario.agendaSelecionada}"  rowKey="#{ageEfe.ate_codigo}"
 						style="text-align: center;" emptyMessage="Você não passou por nenhuma consulta" rendered="true">
-						<f:facet name="header">
-					 		Suas Consultas Realizadas!
-						</f:facet>
+						
 						
 						<p:column headerText="Data">
 							<h:outputText value="#{ageEfe.age_data}">

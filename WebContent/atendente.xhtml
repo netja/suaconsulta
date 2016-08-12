@@ -34,58 +34,73 @@
     <h:body>
      <h:form id="form" enctype="multipart/form-data">
     	
-    	<p:panel style="margin-bottom:20px;height:250px;width:100%"> 
-			<p:dataTable id="dtAtendentes" var="ate" value="#{mbConsultorio.lstAtendente}"  emptyMessage="Não foi encontrado nenhum Atendimento" 
-				    		selectionMode="single" selection="#{mbAtendente.atendenteSelecionado}" rowKey="#{ate.ate_codigo}">
-				<f:facet name="header">
-								 	Selecione o Atendente!
-				</f:facet>
-				<p:ajax event="rowSelect" listener="#{mbAtendente.onRowSelectAtendente}"   update=":form"/>
-										        
-				<p:column headerText="Atendente">
-						<h:outputText value="#{ate.ate_titulo}  #{ate.ate_nome}"/>
-				</p:column>
-				<p:column headerText="Especialidade">
-						<h:outputText value="#{ate.tat_codigo.tat_descricao}"/>
-				</p:column>
-			</p:dataTable>		
+    	<p:panel style="margin-bottom:20px;height:250px;width:100%" header="Cadastro de Atendentes	"> 
+    		<p:panelGrid columns="2" style="width: 90%;" rendered="true">
+				<p:dataTable id="dtAtendentes" var="ate" value="#{mbConsultorio.lstAtendente}"  emptyMessage="Ainda não foi cadastrado" 
+					    		selectionMode="single" selection="#{mbConsultorio.atendenteselecionado}" rowKey="#{ate.ate_codigo}">
+					<f:facet name="header">
+									 	Selecione o Atendente!
+					</f:facet>
+					<p:ajax event="rowSelect" listener="#{mbAtendente.onRowSelectAtendente(mbConsultorio.atendenteselecionado)}"   update=":form"/>
+											        
+					<p:column headerText="Atendente">
+							<h:outputText value="#{ate.ate_titulo}  #{ate.ate_nome}"/>
+					</p:column>
+					<p:column headerText="Especialidade">
+							<h:outputText value="#{ate.tat_codigo.tat_descricao}"/>
+					</p:column>
+				</p:dataTable>
+				<p:panelGrid columns="1" style="width: 10%;" rendered="true">
+					<p:commandButton value="Incluir" action="#{mbConsultorio.cadastrarAtendente()}"/>
+					<p:commandButton value="Alterar" />
+					<p:commandButton value="Apagar" />
+					<p:commandButton value="Fechar" action="#{mbConsultorio.fecharCadastros()}"/>
+				</p:panelGrid>
+			</p:panelGrid>				
 		</p:panel>
 		
 		<p:panel style="margin-bottom:20px;height:350px;width:100%" header="Horários de Atendimento">
 			<p:panelGrid columns="3" cellpadding="10" styleClass="panelNoBorder">
-				<p:dataTable id="dtDia" var="dtDia" value="#{mbConsultorio.lstDiaSemana}"  selectionMode="single" 
-					    		 selection="#{mbAtendente.strDiaSemanaSelecionado}" rowKey="#{dtDia}" >
-					<f:facet name="header">
-									 	Selecione o Dia da Semana!
-					</f:facet>
-					<p:ajax event="rowSelect" listener="#{mbAtendente.onRowSelectDiaSemanaSelecionado}"   update=":form"/>
-											        
-					<p:column headerText="Dia da Semana">
-						<h:outputText value="#{dtDia}"/>
-					</p:column>
-				</p:dataTable>
-				
-				 
-					<p:dataTable id="dtHorarios" var="dtHorarios" value="#{mbAtendente.lstAteHorario}"  emptyMessage="Ainda não foi cadastrado" 
-					    		selectionMode="single" selection="#{mbAtendente.ateHorarioSelecionado}" rowKey="#{dtHorarios.hor_codigo}">
+				<p:panel style="margin-bottom:20px;height:250px;width:100%"> 
+					<p:dataTable id="dtDia" var="dtDia" value="#{mbConsultorio.lstDiaSemana}"  selectionMode="single" 
+						    		 selection="#{mbAtendente.strDiaSemanaSelecionado}" rowKey="#{dtDia}" scrollable="false" >
 						<f:facet name="header">
 										 	Selecione o Dia da Semana!
 						</f:facet>
 						<p:ajax event="rowSelect" listener="#{mbAtendente.onRowSelectDiaSemanaSelecionado}"   update=":form"/>
 												        
-						<p:column headerText="Início">
-							<h:outputText value="#{dtHorarios.hor_inicio}"/>
-						</p:column>
-						<p:column headerText="Fim">
-							<h:outputText value="#{dtHorarios.hor_fim}"/>
+						<p:column headerText="Dia da Semana" width="1">
+							<h:outputText value="#{dtDia}"/>
 						</p:column>
 					</p:dataTable>
-					<p:panelGrid columns="1" style="width: 100%;" rendered="true">
-						<p:commandButton value="Incluir" action="#{mbAtendente.gerarAgenda(5, 2016)}"/>
-						<p:commandButton value="Alterar" />
-						<p:commandButton value="Apagar" />
-					</p:panelGrid>
+				</p:panel>
+				
+				<p:panel style="margin-bottom:20px;height:250px;width:100%"> 
+					<p:dataTable id="dtHorarios" var="dtHorarios" value="#{mbAtendente.lstAteHorario}"  emptyMessage="Ainda não foi cadastrado" 
+					    		selectionMode="single" selection="#{mbAtendente.ateHorarioSelecionado}" rowKey="#{dtHorarios.hor_codigo}">
+						<f:facet name="header">
+										 	Informe os Horários para o Dia!
+						</f:facet>
+						<p:ajax event="rowSelect" listener="#{mbAtendente.onRowSelectDiaSemanaSelecionado}"   update=":form"/>
+												        
+						<p:column headerText="Início">
+							<h:outputText value="#{dtHorarios.hor_inicio}">
+									<f:convertDateTime pattern="HH:mm" type="time" timeZone="GMT-3"/>  
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Fim">
+							<h:outputText value="#{dtHorarios.hor_fim}">
+									<f:convertDateTime pattern="HH:mm" type="time" timeZone="GMT-3"/>  
+							</h:outputText>
+						</p:column>
+					</p:dataTable>					
+				</p:panel>
+				<p:panelGrid columns="1" style="width: 100%;" rendered="true">
+					<p:commandButton value="Incluir" action="#{mbConsultorio.cadastrarHorarioAtendente(mbAtendente.strDiaSemanaSelecionado)}"/>
+					<p:commandButton value="Alterar" />
+					<p:commandButton value="Apagar" action="#{mbAtendente.gerarAgenda(5, 2016)}"/>
 				</p:panelGrid>
+			</p:panelGrid>
 	    </p:panel>
 					
 				

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+     
+    <h:head>
+        <title>Cadastrar</title>
+       	<style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+            .FontLabel {
+				font-size: 12px !important;
+				font-family: Verdana, Arial, Tahoma;
+				font-weight: bold;
+			}
+			.FontLabelAzul {
+				font-size: 12px !important;
+				font-family: Verdana, Arial, Tahoma;
+				font-weight: bold;
+				color: blue;
+			}
+			.customTxtWidth150px .ui-inputfield .ui-inputtext .ui-widget{
+		    	width:150px !important;
+			}
+			.panelNoBorder, .panelNoBorder tr, .panelNoBorder td{
+				border: hidden;
+				border-color: white;
+			}
+        </style>
+    </h:head>
+     
+    <h:body>
+     <h:form id="form" enctype="multipart/form-data">
+    	
+    	<p:panel style="margin-bottom:20px;height:250px;width:100%" header="Profissional" rendered="#{mbConsultorio.booCadastrandoAtendente ==true}" >
+    		<p:panelGrid columns="2" style="width: 100%;height:80px;" styleClass="panelNoBorder" >
+    			<p:outputLabel  value="Título"  required="true" styleClass="FontLabel"/>
+    			<p:outputLabel  value="Nome do Profissional"  required="true" styleClass="FontLabel"/>
+    			<p:selectOneMenu id="selTitulo" value="#{mbConsultorio.strAte_Titulo}">
+		        	<f:selectItem itemLabel="Doutor" itemValue="Dr."/>
+		        	<f:selectItem itemLabel="Doutora" itemValue="Dra."/>		      
+		        </p:selectOneMenu>
+			    <p:inputText value="#{mbConsultorio.atendenteselecionado.ate_nome}" maxlength="40" size="40" style="text-transform:uppercase;"/>
+			    
+
+				<p:outputLabel value="Selecione" styleClass="FontLabel" />
+				<p:selectOneRadio id="optTipoConsulta" value="#{mbSuaconsulta.strTat_tipo}" layout="grid" columns="3" width="100%">
+				            <f:selectItem itemLabel="Medicina" itemValue="0" />
+				            <f:selectItem itemLabel="Odontologia" itemValue="1" />
+				            <f:selectItem itemLabel="Psicologia" itemValue="2" />
+				            <f:selectItem itemLabel="Fonoaudiologia" itemValue="3" />
+				            <f:selectItem itemLabel="Fisioterapia" itemValue="4" />
+				            <f:selectItem itemLabel="Nutrição" itemValue="6" />
+				            
+				            <p:ajax listener="#{mbSuaconsulta.selecionarAtendimento()}"  update="form"/>
+				</p:selectOneRadio>
+						
+						
+				<p:outputLabel value="Selecione a Especialidade" styleClass="FontLabel" />
+				<p:selectOneMenu id="selAat" value="#{mbConsultorio.strTat_codigo}" style="width:300px">
+		        	<f:selectItem itemLabel="Selecione" itemValue="" noSelectionOption="true"/>
+		            <f:selectItems value="#{mbSuaconsulta.tipoAtendimentos}"  var="tipoAtendimentos" itemLabel="#{tipoAtendimentos.tat_descricao}" itemValue="#{tipoAtendimentos.tat_codigo}"/>
+		        </p:selectOneMenu>
+		        
+		        <p:commandButton value="Gravar" action="#{mbConsultorio.salvarAtendente()}"/>
+				<p:commandButton value="Cancelar" action="#{mbConsultorio.fecharCadastros()}"/>
+			    
+    		</p:panelGrid> 
+			
+		</p:panel>
+		
+		<p:panel style="margin-bottom:20px;height:250px;width:100%" header="Horários de Atendimento" rendered="#{mbConsultorio.booCadastrandoAtendente ==false}" >
+			<p:panelGrid columns="2" style="width: 100%;height:70px;" styleClass="panelNoBorder" >
+				<p:outputLabel for="txthor_inicio"   value="Início :" styleClass="FontLabel"/>
+				<p:inputMask id="txthor_inicio" value="#{mbConsultorio.ateHorarioSelecionado.hor_inicio}"  mask="99:99" size="10" >
+					<f:convertDateTime pattern="HH:mm" locale="pt,BR" timeZone="Brazil/East"/>
+				</p:inputMask>
+				
+				<p:outputLabel for="txthor_fim" value="Término :" styleClass="FontLabel"/>
+				 <p:inputMask id="txthor_fim" value="#{mbConsultorio.ateHorarioSelecionado.hor_fim}"  mask="99:99" size="10" >
+					<f:convertDateTime pattern="HH:mm" locale="pt,BR" timeZone="Brazil/East"/>
+				</p:inputMask>
+				
+				<p:outputLabel for="txthor_duracao" value="Duração :" styleClass="FontLabel"/>
+				 <p:inputMask id="txthor_duracao" value="#{mbConsultorio.ateHorarioSelecionado.hor_duracao}"  mask="99:99" size="10" >
+					<f:convertDateTime pattern="HH:mm" locale="pt,BR" timeZone="Brazil/East"/>
+				</p:inputMask>
+				
+				<p:commandButton value="Gravar" actionListener="#{mbConsultorio.salvarHorarioAtendente()}"/>
+				<p:commandButton value="Cancelar" action="#{mbConsultorio.fecharCadastros()}"/>			
+			</p:panelGrid>
+			
+	    </p:panel>
+		
+		
+		
+		
+	 </h:form>
+    </h:body>
+     
+</html>

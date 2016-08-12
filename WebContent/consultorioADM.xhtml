@@ -39,17 +39,21 @@
 			<f:facet name="header">
 				Acessar meu Consultório
 			</f:facet>	
-			<p:selectOneButton value="#{mbConsultorio.strMaskcnpjcpf}">
-	            <f:selectItem itemLabel="CNPJ" itemValue="99.999.999\\9999-99" default="true" />
-	            <f:selectItem itemLabel="CPF" itemValue="999.999.999-99" />
-	            <p:ajax update="form"/>	
-	        </p:selectOneButton>
-     
-			<p:outputLabel for="txtCnpjcpf" value="CNPJ  " styleClass="FontLabelAzul"/>
-        	<p:inputMask id="txtCnpjcpf" value="#{mbConsultorio.strCNPJ}" mask="#{mbConsultorio.strMaskcnpjcpf}"/>
-        	
-        	<p:commandButton value="Validar" action="#{mbConsultorio.consultarCNPJCPF()}" update=":form" />
-        	<p:commandButton value="Cancelar" action="index" update=":form" />
+			<p:panelGrid columns="2" style="width: 20%;" styleClass="panelNoBorder">		
+				<p:selectOneButton value="#{mbConsultorio.strMaskcnpjcpf}">
+		            <f:selectItem itemLabel="CNPJ" itemValue="99.999.999\\9999-99" default="true" />
+		            <f:selectItem itemLabel="CPF  " itemValue="999.999.999-99" />
+		            <p:ajax update="form"/>	
+		        </p:selectOneButton>
+	     				
+	        	<p:inputMask id="txtCnpjcpf" value="#{mbConsultorio.strCNPJ}" mask="#{mbConsultorio.strMaskcnpjcpf}"/>
+	        	
+	        	<h:outputLabel value="Senha          "  	styleClass="FontLabel"/>
+	        	<p:password id="txtSenha" value="#{mbConsultorio.strSenha}" mask="#{mbConsultorio.strMaskcnpjcpf}"/>
+	        		        	
+	        	<p:commandButton value="Validar" action="#{mbConsultorio.consultarCNPJCPF()}" update=":form" />
+	        	<p:commandButton value="Cancelar" action="index" update=":form" />
+	        </p:panelGrid>
 		</p:panel>
 		
 		<p:panel rendered="#{mbConsultorio.strPassoTela == '2'}">	
@@ -60,10 +64,10 @@
 			    <p:layoutUnit position="center" resizable="true" style="border-width: 1px">
 			        <p:panelGrid columns="2" cellpadding="10" styleClass="panelNoBorder" >
 							<p:outputLabel for="txtConNome"   value="Consultório "  styleClass="FontLabel"/>
-							<p:outputLabel id="txtConNome"   value="#{mbAgenda.consultorioSelecionado.con_nome}" styleClass="FontLabelAzul"/>
+							<p:outputLabel id="txtConNome"   value="#{mbConsultorio.consultorio.con_nome}" styleClass="FontLabelAzul"/> 
 								          
 							<p:outputLabel for="txtEndereco" value="Endereço "  styleClass="FontLabel"/>
-							<p:outputLabel id="txtEndereco"   value="#{mbAgenda.consultorioSelecionado.con_endcompl}" styleClass="FontLabelAzul"/>
+							<p:outputLabel id="txtEndereco"   value="#{mbConsultorio.consultorio.end_codigo.end_descricao}, #{mbConsultorio.consultorio.con_endnumero} #{mbConsultorio.consultorio.con_endcompl}" styleClass="FontLabelAzul"/>
 							
 							
 						</p:panelGrid>
