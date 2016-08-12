@@ -43,6 +43,7 @@ import javax.faces.context.FacesContext;
 
 import com.agendaconsulta.dao.AtendenteDAO;
 import com.agendaconsulta.dao.CepDAO;
+import com.agendaconsulta.dao.TipoAtendimentoDAO;
 import com.agendaconsulta.model.Agenda;
 import com.agendaconsulta.model.Atendente;
 import com.agendaconsulta.model.Consultorio;
@@ -75,9 +76,13 @@ public class SuaconsultaBean implements Serializable {
 	private Atendente atendenteSelecionado = new Atendente();
 	private AtendenteDAO atendenteDAO;
 	
+	private TipoAtendimentoDAO tipoAtendimentoDAO;
+	private List<TipoAtendimento> tipoAtendimentos;
+	
 	private TipoAtendimento tipoAtendimentoSelecionado = new TipoAtendimento();
 	
 	private String strPesquisar;
+	private String strTat_tipo = "0";
 	private String strTat_codigo = "0";
 	private String strLocalizacao = "-23.5630635,-46.6566214";
 	
@@ -92,6 +97,10 @@ public class SuaconsultaBean implements Serializable {
     
 	public SuaconsultaBean() {
 		atendenteDAO = new AtendenteDAO();
+		
+		tipoAtendimentoDAO = new TipoAtendimentoDAO();
+		tipoAtendimentos = tipoAtendimentoDAO.listPorTipo(0);
+		System.out.println("Listou : " +tipoAtendimentos.size());
 	}
 	
 
@@ -112,14 +121,22 @@ public class SuaconsultaBean implements Serializable {
 		}
 	}
 	
+	public void selecionarAtendimento(){
+		tipoAtendimentos = tipoAtendimentoDAO.listPorTipo(Integer.valueOf(strTat_tipo));
+		System.out.println("Listou : " +tipoAtendimentos.size());
+    }
+	
 	public void tipoAtendimentoSelecionado(){
-    	FacesMessage msg = new FacesMessage("tipoAtendimentoSelecionado ");
+    	FacesMessage msg = new FacesMessage("Infome um Local para a Pesquisa!");
         FacesContext.getCurrentInstance().addMessage(null, msg);   
         lstConsultorios = null;
         lstAtendentes = null;
         simpleModel = new DefaultMapModel();
     }
 	
+	public void listarTipoAtendimento(){
+		Integer.valueOf(strTat_tipo);
+	}
 	public void pesquisaAtendente(){
 		System.out.println("Buscar: " + strPesquisar + " - Especialidade : " + strTat_codigo ); 
 		if (strPesquisar.trim().length() == 0){
@@ -153,9 +170,13 @@ public class SuaconsultaBean implements Serializable {
 	        return;
 		}
 		
-		if (strTat_codigo.trim().length() == 0)
-			return;
-		
+		if (strTat_codigo.trim().length() == 0 || strTat_codigo.equals("0")){
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"Informe uma Especialidade!", "Cadastro de Consultório"));
+	        return;
+		}
 		
 		  
 		if (CareFunctions.isApenasNumeros(strPesquisar)){
@@ -368,6 +389,28 @@ public class SuaconsultaBean implements Serializable {
 	public void setStrLocalizacao(String strLocalizacao) {
 		this.strLocalizacao = strLocalizacao;
 	}
+
+
+	public String getStrTat_tipo() {
+		return strTat_tipo;
+	}
+
+
+	public void setStrTat_tipo(String strTat_tipo) {
+		this.strTat_tipo = strTat_tipo;
+	}
+
+
+	public List<TipoAtendimento> getTipoAtendimentos() {
+		return tipoAtendimentos;
+	}
+
+
+	public void setTipoAtendimentos(List<TipoAtendimento> tipoAtendimentos) {
+		this.tipoAtendimentos = tipoAtendimentos;
+	}
+
+
 
 
 	public static void main(String args[]){

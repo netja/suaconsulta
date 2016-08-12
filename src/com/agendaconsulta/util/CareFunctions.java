@@ -274,6 +274,17 @@ public class CareFunctions {
 		return Texto;
 	}
 	
+	static public boolean Valida_CNPJ_CPF(String str_cnpj) {
+		str_cnpj = CareFunctions.RemoveCaracteresNaoNumericos(str_cnpj);
+		if (str_cnpj.trim().length() == 14){
+			return Valida_CNPJ(str_cnpj);
+		}else if (str_cnpj.trim().length() == 11){
+			return Valida_CPF(str_cnpj);
+		}else{
+			return false;
+		}
+	}
+	
 	static public boolean Valida_CNPJ(String str_cnpj) {
 		if (str_cnpj.trim().equals("") || str_cnpj.trim().equals("99999999999999")) {
 			return true;

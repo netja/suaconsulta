@@ -4,9 +4,13 @@
 <hibernate-configuration>
 	<session-factory>
 		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/consulta</property>
+		<property name="hibernate.connection.url">jdbc:mysql://agendarconsultaonline.com.br:3306/agendarc_medica</property>
+		<property name="hibernate.connection.username">agendarc_admin</property>
+		<property name="hibernate.connection.password">Ale432466</property>
+		
+		<!-- <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/consulta</property>
 		<property name="hibernate.connection.username">root</property>
-		<property name="hibernate.connection.password">ale432466</property>
+		<property name="hibernate.connection.password">ale432466</property>-->
 		
 		<!-- <property name="hibernate.connection.url">jdbc:mysql://clipic.net:3306/consulta</property>
 		<property name="hibernate.connection.username">alexandre</property>

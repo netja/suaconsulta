@@ -24,10 +24,13 @@ import com.agendaconsulta.dao.AgendaDAO;
 import com.agendaconsulta.dao.AtendenteDAO;
 import com.agendaconsulta.dao.CepDAO;
 import com.agendaconsulta.dao.ConsultorioDAO;
+import com.agendaconsulta.dao.TipoAtendimentoDAO;
 import com.agendaconsulta.dao.UsuarioDAO;
 import com.agendaconsulta.model.Agenda;
+import com.agendaconsulta.model.AteHorario;
 import com.agendaconsulta.model.Atendente;
 import com.agendaconsulta.model.Consultorio;
+import com.agendaconsulta.model.TipoAtendimento;
 import com.agendaconsulta.model.Usuario;
 import com.agendaconsulta.model.cep.Endereco;
 import com.agendaconsulta.util.CareFunctions;
@@ -68,6 +71,10 @@ import javax.faces.context.FacesContext;
  * @author - Alexandre
  * @since - 08/08/2014
  */
+/**
+ * @author JARDIM
+ *
+ */
 @ManagedBean(name = "mbConsultorio")
 @SessionScoped
 //@ViewScoped
@@ -86,9 +93,10 @@ public class ConsultorioBean implements Serializable {
 	private List<Agenda> lstAgenda;
 	private List<Agenda> lstAgendadodia;
 	private AgendaDAO agendaDAO;
-	
-	
-	private List<String> lstDiaSemana;
+	private String strTat_tipo = "0";
+	private Long strTat_codigo;
+	private String strAte_Titulo = "Dr.";
+	private AteHorario ateHorarioSelecionado;
 	
 	
 	//Listagem de Pacientes
@@ -102,20 +110,19 @@ public class ConsultorioBean implements Serializable {
 	private List<Agenda> lstAgendaEfetuadas;
 	private boolean mostrar = false;
 	
-	private ScheduleModel carregarCalendario;
+	private List<String> lstDiaSemana;
 	
-	public Atendente getAtendenteselecionado() {
-		return atendenteselecionado;
-	}
-
-	public void setAtendenteselecionado(Atendente atendenteselecionado) {
-		this.atendenteselecionado = atendenteselecionado;
-	}
+	private ScheduleModel carregarCalendario;
+	private TipoAtendimentoDAO tipoAtendimentoDAO;
+	private boolean booCadastrandoAtendente;
 
 	private String strMaskcnpjcpf = "99.999.999\\9999-99";
 	private String strCNPJ;
 	private String strCEP;
+	private String strSenha;
 	private String strPassoTela = "";
+	private List<TipoAtendimento> tipoAtendimentos;
+	private TipoAtendimento tipoAtendimentoSelecionado;
 	
 	private Endereco endereco;
 	private CepDAO cepDAO = new CepDAO(); 
@@ -130,9 +137,11 @@ public class ConsultorioBean implements Serializable {
 		
 		carregarCalendario = new DefaultScheduleModel();
 		
+		mesesDoAno = CareFunctions.mesesDoAno();
 		lstDiaSemana = CareFunctions.diasDiaSemana();
 		
-		mesesDoAno = CareFunctions.mesesDoAno();
+		tipoAtendimentoDAO = new TipoAtendimentoDAO();
+		tipoAtendimentos = tipoAtendimentoDAO.listPorTipo(0);
 	
 		/*
 		meses  = new HashMap<String, String>();
@@ -174,30 +183,37 @@ public class ConsultorioBean implements Serializable {
 	@SuppressWarnings("finally")
 	public String cadastrarConsultorio() {
 		try {
-			System.out.println("teste");
-			consultorioDAO.save(consultorio);
+			System.out.println("Vai salvar um Consultorio");
+			if (consultorioDAO.save(consultorio)){
+				strPassoTela = "4";
+				//consultorio = new Consultorio();
+		
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO,
+								"Consultório Adicionado com Sucesso!", "TipoAtendimento adicionado"));
+				
+				return "consultorioCadastrado";
+			}else{
+				return "erro";
+			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return "erro";
-		} finally {
-			strPassoTela = "4";
-			//consultorio = new Consultorio();
-	
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO,
-							"Consultório Adicionado com Sucesso!", "TipoAtendimento adicionado"));
-			
-			return "consultorioCadastrado";
-		}
+		} 
 	}
 	
 	
 	
-	public void cadastrarAtendente(){
+	public void salvarAtendente(){
 		try {
+			atendenteselecionado.setAte_nome(atendenteselecionado.getAte_nome().toUpperCase());
+			atendenteselecionado.setAte_titulo(getStrAte_Titulo());
+			tipoAtendimentoSelecionado = tipoAtendimentoDAO.BuscarPorCodigo(strTat_codigo);
+			atendenteselecionado.setTat_codigo(tipoAtendimentoSelecionado);
 			System.out.println("Salvar Atendentes");
 			atendenteDAO.save(atendenteselecionado);
+			RequestContext.getCurrentInstance().closeDialog(null);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			//return "erro";
@@ -208,11 +224,93 @@ public class ConsultorioBean implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(
 					null,
 					new FacesMessage(FacesMessage.SEVERITY_INFO,
-							"Atendente alterado  com Sucesso!", "TipoAtendimento adicionado"));
+							"Atendente Cadastrado com Sucesso!", "Cadastro de Atendentes"));
 			
 			//return "atendenteCadastrado";
 		}
 	}
+	
+	 public void cadastrarAtendente() {
+			atendenteselecionado = new Atendente();
+			atendenteselecionado.setCon_codigo(consultorio);
+			setBooCadastrandoAtendente(true);
+			
+	        Map<String,Object> options = new HashMap<String, Object>();
+	        options.put("modal", true);
+	        options.put("draggable", false);
+	        options.put("resizable", false);
+	        options.put("contentHeight", 270); 
+	        RequestContext.getCurrentInstance().openDialog("atendenteCadastros", options, null);
+	}
+	 public void fecharCadastros(){
+		 RequestContext.getCurrentInstance().closeDialog(null);
+	 }
+	 
+	 
+	 
+	 public void salvarHorarioAtendente(){
+			try {
+				System.out.println("Salvar Horario");
+				String strErro = "";
+				if (ateHorarioSelecionado.getHor_inicio() == null)
+					strErro = "Horário Inicial Inválido!";
+				else if (ateHorarioSelecionado.getHor_fim() == null)
+					strErro = "Horário Final Inválido!";
+				else if (ateHorarioSelecionado.getHor_duracao() == null)
+					strErro = "Informação da Duração Inválida!";
+				
+				if (strErro.trim().length() == 0){
+					atendenteDAO.saveHorario(ateHorarioSelecionado);
+					RequestContext.getCurrentInstance().closeDialog(null);
+				}else{
+					FacesContext.getCurrentInstance().addMessage(
+							null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR,
+									strErro, "Cadastro de Atendentes"));
+				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				//return "erro";
+			} finally {
+				strPassoTela = "4";
+				//consultorio = new Consultorio();
+		
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO,
+								"Atendente Cadastrado com Sucesso!", "Cadastro de Atendentes"));
+				
+				//return "atendenteCadastrado";
+			}
+		}
+		
+		 public void cadastrarHorarioAtendente(String strDiaSemanaSelecionado) {
+			 int intDiaSemana = CareFunctions.diasDiaSemana().indexOf(strDiaSemanaSelecionado) +1;
+			 if (atendenteselecionado == null){
+				 FacesContext.getCurrentInstance().addMessage(
+							null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR,
+									"Selecione o Atendente!", "Cadastro de Atendentes"));	 
+			 }else if (intDiaSemana < 1 || intDiaSemana > 7){
+				 FacesContext.getCurrentInstance().addMessage(
+							null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR,
+									"Selecione o Dia da Semana!", "Cadastro de Atendentes"));	 
+			 }else{
+				 ateHorarioSelecionado = new AteHorario();
+				 ateHorarioSelecionado.setAte_codigo(atendenteselecionado);
+				 ateHorarioSelecionado.setCon_codigo(atendenteselecionado.getCon_codigo());
+				 ateHorarioSelecionado.setHor_diasemana(intDiaSemana);
+				 setBooCadastrandoAtendente(false);
+					
+			     Map<String,Object> options = new HashMap<String, Object>();
+			     options.put("modal", true);
+			     options.put("draggable", false);
+			     options.put("resizable", false);
+			     options.put("contentHeight", 270); 
+			     RequestContext.getCurrentInstance().openDialog("atendenteCadastros", options, null);
+			 }
+		}
 	
 	
 	
@@ -232,7 +330,10 @@ public class ConsultorioBean implements Serializable {
 	        options.put("resizable", false);
 	        options.put("contentHeight", 820);
 	        options.put("contentWidth", 1100);
-	        RequestContext.getCurrentInstance().openDialog("atendente", options, null);
+	        //RequestContext.getCurrentInstance().openDialog("atendente", options, null);
+	        RequestContext r;
+	        r = RequestContext.getCurrentInstance();
+	        r.openDialog("atendente", options, null);
 	}
 	 
 	 public void viewPacientes() {
@@ -250,7 +351,8 @@ public class ConsultorioBean implements Serializable {
 	 
 	
 	public void validarCNPJCPF(){
-		if (strCNPJ.trim().length() == 14 ||strCNPJ.trim().length() == 18 ){
+		//if (strCNPJ.trim().length() == 14 ||strCNPJ.trim().length() == 18 ){
+		if (CareFunctions.Valida_CNPJ_CPF(strCNPJ)){
 			strPassoTela = "2";
 		}else{
 		
@@ -272,9 +374,14 @@ public class ConsultorioBean implements Serializable {
 						null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR,
 								"Consultório não Cadastrado!", "Cadastro de Consultório"));
-			}else{
+			}else if (consultorio.getCon_senha().equals(getStrSenha())){
 				lstAtendente = atendenteDAO.listPorConsultorio(consultorio);
 				strPassoTela = "2";
+			}else{
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR,
+								"Senha Inválida!", "Cadastro de Consultório"));
 			}			
 			
 		}else{
@@ -347,7 +454,7 @@ public class ConsultorioBean implements Serializable {
 	
 	
 	public void abrirAgenda(){
-		if (atendenteselecionado == null || strMesSelecionado == null )
+		if (atendenteselecionado == null || strMesSelecionado == null ) 
 			return;
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
@@ -357,6 +464,10 @@ public class ConsultorioBean implements Serializable {
 		cal.setTime(dtIni);
 		int intUltimoDia = cal.getActualMaximum( Calendar.DAY_OF_MONTH );
 		Date dtFim = new Date(intAnoSel, intMes -1, intUltimoDia);
+		
+		if (intMes < 0 || intMes > 12){
+			return;
+		}
 		
 		
 		
@@ -468,7 +579,7 @@ public class ConsultorioBean implements Serializable {
 	 }
 	 
 	 public void criarAgenda(Atendente atendente, int iMes, int iAno){
-		 String strMes = CareFunctions.ColocaZeroInicio(iMes, 2);
+		/* String strMes = CareFunctions.ColocaZeroInicio(iMes, 2);
 		 String strAno = CareFunctions.ColocaZeroInicio(iAno, 4);
 		 Calendar diaAtual =  Calendar.getInstance();
 		 Calendar almocoIni =  Calendar.getInstance();
@@ -548,9 +659,16 @@ public class ConsultorioBean implements Serializable {
 			 }
 			 
 		 }
-		 
+		 */
 		 
 	 }
+	 
+	
+	 
+	 public void selecionarAtendimento(){
+			tipoAtendimentos = tipoAtendimentoDAO.listPorTipo(Integer.valueOf(strTat_tipo));
+			System.out.println("Listou : " +tipoAtendimentos.size());
+	  }
 
 	public Consultorio getConsultorio() {
 		return consultorio;
@@ -570,14 +688,6 @@ public class ConsultorioBean implements Serializable {
 	public void setConsultorioDAO(ConsultorioDAO consultorioDAO) {
 		this.consultorioDAO = consultorioDAO;
 	}
-
-
-	
-	
-	
-	
-	
-
 
 	public String getStrMaskcnpjcpf() {
 		return strMaskcnpjcpf;
@@ -747,14 +857,7 @@ public class ConsultorioBean implements Serializable {
 		this.mostrar = mostrar;
 	}
 
-	public List<String> getLstDiaSemana() {
-		return lstDiaSemana;
-	}
-
-	public void setLstDiaSemana(List<String> lstDiaSemana) {
-		this.lstDiaSemana = lstDiaSemana;
-	}
-
+	
 	public String getStrMesSelecionado() {
 		return strMesSelecionado;
 	}
@@ -780,10 +883,89 @@ public class ConsultorioBean implements Serializable {
 		this.mesesDoAno = mesesDoAno;
 	}
 
-		
-	
-	
-	
+	public String getStrSenha() {
+		return strSenha;
+	}
+
+	public void setStrSenha(String strSenha) {
+		this.strSenha = strSenha;
+	}
+
+	public String getStrTat_tipo() {
+		return strTat_tipo;
+	}
+
+	public void setStrTat_tipo(String strTat_tipo) {
+		this.strTat_tipo = strTat_tipo;
+	}
+
+	public Long getStrTat_codigo() {
+		return strTat_codigo;
+	}
+
+	public void setStrTat_codigo(Long strTat_codigo) {
+		this.strTat_codigo = strTat_codigo;
+	}
+
+	public Atendente getAtendenteselecionado() {
+		return atendenteselecionado;
+	}
+
+	public void setAtendenteselecionado(Atendente atendenteselecionado) {
+		this.atendenteselecionado = atendenteselecionado;
+	}
+
+
+	public boolean isBooCadastrandoAtendente() {
+		return booCadastrandoAtendente;
+	}
+
+
+	public void setBooCadastrandoAtendente(boolean booCadastrandoAtendente) {
+		this.booCadastrandoAtendente = booCadastrandoAtendente;
+	}
+
+
+	public String getStrAte_Titulo() {
+		return strAte_Titulo;
+	}
+
+
+	public void setStrAte_Titulo(String strAte_Titulo) {
+		this.strAte_Titulo = strAte_Titulo;
+	}
+
+
+	public TipoAtendimento getTipoAtendimentoSelecionado() {
+		return tipoAtendimentoSelecionado;
+	}
+
+
+	public void setTipoAtendimentoSelecionado(TipoAtendimento tipoAtendimentoSelecionado) {
+		this.tipoAtendimentoSelecionado = tipoAtendimentoSelecionado;
+	}
+
+
+	public AteHorario getAteHorarioSelecionado() {
+		return ateHorarioSelecionado;
+	}
+
+
+	public void setAteHorarioSelecionado(AteHorario ateHorarioSelecionado) {
+		this.ateHorarioSelecionado = ateHorarioSelecionado;
+	}
+
+
+	public List<String> getLstDiaSemana() {
+		return lstDiaSemana;
+	}
+
+
+	public void setLstDiaSemana(List<String> lstDiaSemana) {
+		this.lstDiaSemana = lstDiaSemana;
+	}
+
+
 	
 
 	

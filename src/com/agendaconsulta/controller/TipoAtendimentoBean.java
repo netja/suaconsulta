@@ -39,10 +39,10 @@ public class TipoAtendimentoBean implements Serializable {
 	
 
 	public TipoAtendimentoBean() {
-		
+		/*
 		tipoAtendimentoDAO = new TipoAtendimentoDAO();
-		tipoAtendimentos = tipoAtendimentoDAO.listAll();
-		System.out.println("Listou : " +tipoAtendimentos.size());
+		tipoAtendimentos = tipoAtendimentoDAO.listPorTipo(0);
+		System.out.println("Listou : " +tipoAtendimentos.size());*/
     }
 
 	public void salvaTipoAtendimento_bkp() {

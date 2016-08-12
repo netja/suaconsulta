@@ -40,6 +40,20 @@ public class AtendenteDAO implements Serializable {
 		}
 	}
 	
+	public void saveHorario(AteHorario ah) {
+		session = HibernateUtil.getSessionfactory().openSession();
+
+		try {
+			session.getTransaction().begin();
+			session.saveOrUpdate(ah);
+			session.getTransaction().commit();
+		} catch (HibernateException ex) {
+			ex.printStackTrace();
+		} finally {
+			session.close();
+		}
+	}
+	
 	
 	@SuppressWarnings("unchecked")
 	public List<Atendente> listAll() {

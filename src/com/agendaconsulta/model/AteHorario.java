@@ -1,6 +1,6 @@
 package com.agendaconsulta.model;
 
-import java.sql.Time;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,11 +34,11 @@ public class AteHorario {
 	private int hor_diasemana;
 	
 	@Column(name = "HOR_DURACAO")
-	private Time hor_duracao;
+	private Date hor_duracao;
 	@Column(name = "HOR_INICIO")
-	private Time hor_inicio;
+	private Date hor_inicio;
 	@Column(name = "HOR_FIM")
-	private Time hor_fim;
+	private Date hor_fim;
 	public long getHor_codigo() {
 		return hor_codigo;
 	}
@@ -57,30 +57,34 @@ public class AteHorario {
 	public void setCon_codigo(Consultorio con_codigo) {
 		this.con_codigo = con_codigo;
 	}
-	public int getHor_semana() {
+	public int getHor_diasemana() {
 		return hor_diasemana;
 	}
 	public void setHor_diasemana(int hor_diasemana) {
 		this.hor_diasemana = hor_diasemana;
 	}
-	public Time getHor_duracao() {
+	public Date getHor_duracao() {
 		return hor_duracao;
 	}
-	public void setHor_duracao(Time hor_duracao) {
+	public void setHor_duracao(Date hor_duracao) {
 		this.hor_duracao = hor_duracao;
 	}
-	public Time getHor_inicio() {
+	public Date getHor_inicio() {
 		return hor_inicio;
 	}
-	public void setHor_inicio(Time hor_inicio) {
+	public void setHor_inicio(Date hor_inicio) {
 		this.hor_inicio = hor_inicio;
 	}
-	public Time getHor_fim() {
+	public Date getHor_fim() {
 		return hor_fim;
 	}
-	public void setHor_fim(Time hor_fim) {
+	public void setHor_fim(Date hor_fim) {
 		this.hor_fim = hor_fim;
 	}
+
+
+	
+	
 	
 	
 	

@@ -13,6 +13,7 @@ import org.hibernate.transform.Transformers;
 
 import com.agendaconsulta.model.Consultorio;
 import com.agendaconsulta.model.Usuario;
+import com.agendaconsulta.util.CareFunctions;
 import com.agendaconsulta.util.HibernateUtil;
 
 /**
@@ -24,17 +25,21 @@ public class ConsultorioDAO implements Serializable {
 
 	protected Session session;
 
-	public void save(Consultorio c) {
+	public boolean save(Consultorio c) {
 		session = HibernateUtil.getSessionfactory().openSession();
 
 		try {
+			c.setCon_telefone(CareFunctions.removeTracoPont(c.getCon_telefone()));
 			session.getTransaction().begin();
 			session.saveOrUpdate(c);
-			session.getTransaction().commit();
+			session.getTransaction().commit();			
 		} catch (HibernateException ex) {
 			ex.printStackTrace();
+			session.close();
+			return false;
 		} finally {
 			session.close();
+			return true;
 		}
 	}
 	

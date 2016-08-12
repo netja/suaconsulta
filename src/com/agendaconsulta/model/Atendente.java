@@ -32,6 +32,7 @@ public class Atendente implements Serializable  {
 	private String ate_titulo;
 	@Column(name = "ATE_NOME", length=40)
 	private String ate_nome;
+	/*
 	@Column(name = "ATE_DURACAO")
 	private Time ate_duracao;
 	@Column(name = "ATE_ALMOCO")
@@ -49,8 +50,7 @@ public class Atendente implements Serializable  {
 	@Column(name = "ATE_SABADO_INI")
 	private Time ate_sabado_ini;
 	@Column(name = "ATE_DOMINGO_INI")
-	private Time ate_domingo_ini;
-	
+	private Time ate_domingo_ini;	
 	@Column(name = "ATE_ALMOCO_FIM")
 	private Time ate_almoco_fim;
 	@Column(name = "ATE_SEGUNDA_FIM")
@@ -66,7 +66,7 @@ public class Atendente implements Serializable  {
 	@Column(name = "ATE_SABADO_FIM")
 	private Time ate_sabado_fim;
 	@Column(name = "ATE_DOMINGO_FIM")
-	private Time ate_domingo_fim;
+	private Time ate_domingo_fim;*/
 	
 	
 	public long getAte_codigo() {
@@ -105,112 +105,7 @@ public class Atendente implements Serializable  {
 	public void setAte_nome(String ate_nome) {
 		this.ate_nome = ate_nome;
 	}
-	public Time getAte_duracao() {
-		return ate_duracao;
-	}
-	public void setAte_duracao(Time ate_duracao) {
-		this.ate_duracao = ate_duracao;
-	}
-	public Time getAte_almoco() {
-		return ate_almoco;
-	}
-	public void setAte_almoco(Time ate_almoco) {
-		this.ate_almoco = ate_almoco;
-	}
-	public Time getAte_segunda_ini() {
-		return ate_segunda_ini;
-	}
-	public void setAte_segunda_ini(Time ate_segunda_ini) {
-		this.ate_segunda_ini = ate_segunda_ini;
-	}
-	public Time getAte_terca_ini() {
-		return ate_terca_ini;
-	}
-	public void setAte_terca_ini(Time ate_terca_ini) {
-		this.ate_terca_ini = ate_terca_ini;
-	}
-	public Time getAte_quarta_ini() {
-		return ate_quarta_ini;
-	}
-	public void setAte_quarta_ini(Time ate_quarta_ini) {
-		this.ate_quarta_ini = ate_quarta_ini;
-	}
-	public Time getAte_quinta_ini() {
-		return ate_quinta_ini;
-	}
-	public void setAte_quinta_ini(Time ate_quinta_ini) {
-		this.ate_quinta_ini = ate_quinta_ini;
-	}
-	public Time getAte_sexta_ini() {
-		return ate_sexta_ini;
-	}
-	public void setAte_sexta_ini(Time ate_sexta_ini) {
-		this.ate_sexta_ini = ate_sexta_ini;
-	}
-	public Time getAte_sabado_ini() {
-		return ate_sabado_ini;
-	}
-	public void setAte_sabado_ini(Time ate_sabado_ini) {
-		this.ate_sabado_ini = ate_sabado_ini;
-	}
-	public Time getAte_domingo_ini() {
-		return ate_domingo_ini;
-	}
-	public void setAte_domingo_ini(Time ate_domingo_ini) {
-		this.ate_domingo_ini = ate_domingo_ini;
-	}
 	
-	
-	
-	
-	public Time getAte_almoco_fim() {
-		return ate_almoco_fim;
-	}
-	public void setAte_almoco_fim(Time ate_almoco_fim) {
-		this.ate_almoco_fim = ate_almoco_fim;
-	}
-	public Time getAte_segunda_fim() {
-		return ate_segunda_fim;
-	}
-	public void setAte_segunda_fim(Time ate_segunda_fim) {
-		this.ate_segunda_fim = ate_segunda_fim;
-	}
-	public Time getAte_terca_fim() {
-		return ate_terca_fim;
-	}
-	public void setAte_terca_fim(Time ate_terca_fim) {
-		this.ate_terca_fim = ate_terca_fim;
-	}
-	public Time getAte_quarta_fim() {
-		return ate_quarta_fim;
-	}
-	public void setAte_quarta_fim(Time ate_quarta_fim) {
-		this.ate_quarta_fim = ate_quarta_fim;
-	}
-	public Time getAte_quinta_fim() {
-		return ate_quinta_fim;
-	}
-	public void setAte_quinta_fim(Time ate_quinta_fim) {
-		this.ate_quinta_fim = ate_quinta_fim;
-	}
-	public Time getAte_sexta_fim() {
-		return ate_sexta_fim;
-	}
-	public void setAte_sexta_fim(Time ate_sexta_fim) {
-		this.ate_sexta_fim = ate_sexta_fim;
-	}
-	public Time getAte_sabado_fim() {
-		return ate_sabado_fim;
-	}
-	public void setAte_sabado_fim(Time ate_sabado_fim) {
-		this.ate_sabado_fim = ate_sabado_fim;
-	}
-	public Time getAte_domingo_fim() {
-		return ate_domingo_fim;
-	}
-	public void setAte_domingo_fim(Time ate_domingo_fim) {
-		this.ate_domingo_fim = ate_domingo_fim;
-	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}

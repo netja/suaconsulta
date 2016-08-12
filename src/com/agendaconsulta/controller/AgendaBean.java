@@ -88,10 +88,13 @@ public class AgendaBean implements Serializable {
 	public void abrirAtendente(){
 		System.out.println("Vai abrir a Atendente"); 
 		lstAtendente = atendenteDAO.listPorConsultorio(consultorioSelecionado);
-		if (lstAgenda != null)
+		if (lstAgenda != null){
 			lstAgenda.clear();
-		if (lstAgendadodia != null)
+		}
+		if (lstAgendadodia != null){
 			lstAgendadodia.clear();
+		}
+		agendaDatahoraselecionada = null;
 				
         System.out.println("Abriu "+ lstAtendente.size() );//
 		
@@ -248,11 +251,13 @@ public class AgendaBean implements Serializable {
 
 	public void onRowSelectData(SelectEvent event) {
 		  System.out.println("SelectEvent Data : " + agendaDataselecionada.getAge_data1());
+		  agendaDatahoraselecionada = null;
 		  listarHorario();
 	}
 	
 	public void onRowSelectAtendente(SelectEvent event) {
 		  System.out.println("SelectEvent Atendente : " + agendaDataselecionada.getAge_data1());
+		  agendaDatahoraselecionada = null;
 		  abrirAgenda();
 	}
 	

@@ -25,6 +25,8 @@ public class TipoAtendimento implements Serializable  {
 		private String tat_descricao;
 		@Column(name = "TAT_ATIVO", length=1)
 		private String tat_ativo;
+		@Column(name = "TAT_TIPO", length=1)
+		private int tat_tipo;//0=medicina||1=Odontologia||2=Psicologia||3=Fonoaudiologia||4=Fisioterapia||5=Musicoterapia||6=Nutrição||7=Terapia Ocupacional
 		
 		public long getTat_codigo() {
 			return tat_codigo;
@@ -43,6 +45,12 @@ public class TipoAtendimento implements Serializable  {
 		}
 		public void setTat_ativo(String tat_ativo) {
 			this.tat_ativo = tat_ativo;
+		}
+		public int getTat_tipo() {
+			return tat_tipo;
+		}
+		public void setTat_tipo(int tat_tipo) {
+			this.tat_tipo = tat_tipo;
 		}
 		
 		

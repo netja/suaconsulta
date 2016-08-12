@@ -37,7 +37,6 @@ import com.agendaconsulta.util.CareFunctions;
 import sun.security.jca.GetInstance;
 
 
-
 /**
  * @author - Alexandre
  * @since - 08/08/2014
@@ -65,13 +64,12 @@ public class AtendenteBean implements Serializable {
 	private String strTat_codigo = "0";
 	private String strDiaSemanaSelecionado;
 	
-
 	public AtendenteBean() {
 		atendenteDAO = new AtendenteDAO();
 		agendaDAO = new AgendaDAO();
 	}
 	
-
+	
 	
 	
 	public void pesquisaAtendente(){
@@ -102,26 +100,22 @@ public class AtendenteBean implements Serializable {
 	}
 	
 	 public void viewAgenda() {
-		 	
-		 
-		 
 	        Map<String,Object> options = new HashMap<String, Object>();
 	        options.put("modal", true);
 	        options.put("draggable", false);
 	        options.put("resizable", false);
 	        options.put("contentHeight", 320); 
 	        RequestContext.getCurrentInstance().openDialog("agenda", options, null);
-	        
 	}
+	 
+	
 	 
 	 
 	 
 	 public void onRowSelectDiaSemanaSelecionado(SelectEvent event) {
-		  System.out.println("SelectEvent Dia Semana : " + strDiaSemanaSelecionado);
-		  
+		  System.out.println("SelectEvent Dia Semana : " + strDiaSemanaSelecionado);		  
 		  int intDiaSemana = CareFunctions.diasDiaSemana().indexOf(strDiaSemanaSelecionado) +1;
-		  listarHorario(intDiaSemana);
-		 
+		  listarHorario(intDiaSemana);		 
 	}
 	 
 	private void listarHorario(int intDiaSemana){
@@ -161,7 +155,7 @@ public class AtendenteBean implements Serializable {
 				Calendar calHorario = new GregorianCalendar(intAno, intMes - 1, intDia);  
 				int diaSemana = calHorario.get(Calendar.DAY_OF_WEEK);
 				
-				listarHorario(diaSemana);
+				listarHorario(diaSemana-1);
 				if (lstAteHorario == null)
 					return;
 				for (int i = 0; i < lstAteHorario.size(); i ++){
@@ -249,15 +243,21 @@ public class AtendenteBean implements Serializable {
 	     System.out.println( sdf.format(cl.getTime()));
 	     
 	     System.out.println( sdf.format(cl.getTime()));
-	     
-	     
-	     //cl.add(arg0, arg1);
-		
 	}
 	
+	public void fecharCadastros(){
+		 RequestContext.getCurrentInstance().closeDialog(null);
+	 }
+	
+	
+	
 	public void onRowSelectAtendente(SelectEvent event) {
-		  System.out.println("SelectEvent Atendente : " + atendenteSelecionado.getAte_nome());
-		
+		  System.out.println("SelectEvent Atendente : " + atendenteSelecionado.getAte_nome());		
+	}
+	
+	public void onRowSelectAtendente(Atendente atendente) {
+		atendenteSelecionado = atendente;
+		  System.out.println("SelectEvent Atendente : " + atendenteSelecionado.getAte_nome());		
 	}
 
 	
@@ -377,8 +377,12 @@ public class AtendenteBean implements Serializable {
 
 	public void setAteHorarioSelecionado(AteHorario ateHorarioSelecionado) {
 		this.ateHorarioSelecionado = ateHorarioSelecionado;
-	}  
-	
+	}
+
+
+
+
+		
 	
 
 	

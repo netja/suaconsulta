@@ -28,7 +28,7 @@ public class CepDAO implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public Endereco buscaPorcep(String strCEP){
-		System.out.println("LISTANDO Por Cp");
+		System.out.println("LISTANDO Por Cep");
 		session = HibernateUtil.getSessionfactory().openSession();
 
 		try {
